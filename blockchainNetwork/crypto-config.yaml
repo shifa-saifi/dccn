@@ -1,0 +1,45 @@
+OrdererOrgs:
+   - Name: orderer
+     Domain: orderer.certification-network.com
+     EnableNodeOUs: true
+     Specs:
+       - Hostname : orderer1
+         SANS:
+         - "localhost"
+         - "127.0.0.1"
+   
+       - Hostname : orderer2
+         SANS:
+         - "localhost"
+         - "127.0.0.1"
+   
+       - Hostname : orderer3
+         SANS:
+         - "localhost"
+         - "127.0.0.1"
+  
+    
+PeerOrgs:
+  - Name: mgm 
+    Domain: mgm.certification-network.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1 
+      
+  - Name: aktu 
+    Domain: aktu.certification-network.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1 
+      
+  - Name: upgov 
+    Domain: upgov.certification-network.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1 

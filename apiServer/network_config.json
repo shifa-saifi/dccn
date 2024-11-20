@@ -1,0 +1,238 @@
+{
+	"name": "test",
+  "description": "test",
+	"version": "1.0.0",
+	"license": "Apache-2.0",
+  "client": {
+      "organization": "org1"
+    },
+	"channels": {
+		"common": { 
+			"orderers": [ "orderer1.orderer.test.com", "orderer2.orderer.test.com", "orderer3.orderer.test.com"],
+      "peers": {
+				"peer0.org1.test.com": {
+					"endorsingPeer": true,
+					"chaincodeQuery": true,
+					"ledgerQuery": true,
+					"eventSource": true
+        },
+				"peer1.org1.test.com": {
+					"endorsingPeer": false,
+					"chaincodeQuery": true,
+					"ledgerQuery": true,
+					"eventSource": false
+        },
+				"peer0.org2.test.com": {
+					"endorsingPeer": true,
+					"chaincodeQuery": true,
+					"ledgerQuery": true,
+					"eventSource": true
+        },
+				"peer1.org2.test.com": {
+					"endorsingPeer": false,
+					"chaincodeQuery": true,
+					"ledgerQuery": true,
+					"eventSource": false
+        },
+				"peer0.org3.test.com": {
+					"endorsingPeer": true,
+					"chaincodeQuery": true,
+					"ledgerQuery": true,
+					"eventSource": true
+        },
+				"peer1.org3.test.com": {
+					"endorsingPeer": false,
+					"chaincodeQuery": true,
+					"ledgerQuery": true,
+					"eventSource": false
+        }
+     },
+      "chaincodes": [ "Loancc:v1.0", "Shipmentcc:v1.0" ]
+      }
+    },
+	"organizations": {
+		"org1": {
+           "mspid": "org1MSP",
+           "certificateAuthorities": [
+               "ca.org1.test.com"
+            ],
+            "adminPrivateKey": {
+				"path": "./crypto/org1/admin/msp/keystore/priv_sk"
+			},
+			"signedCert": {
+				"path": "./crypto/org1/admin/msp/signcerts/Admin@org1.test.com-cert.pem"
+			},
+            "peers": [
+				"peer0.org1.test.com",
+				"peer1.org1.test.com" ]
+				},
+		"org2": {
+           "mspid": "org2MSP",
+           "certificateAuthorities": [
+               "ca.org2.test.com"
+            ],
+            "adminPrivateKey": {
+				"path": "./crypto/org2/admin/msp/keystore/priv_sk"
+			},
+			"signedCert": {
+				"path": "./crypto/org2/admin/msp/signcerts/Admin@org2.test.com-cert.pem"
+			},
+            "peers": [
+				"peer0.org2.test.com",
+				"peer1.org2.test.com" ]
+				},
+		"org3": {
+           "mspid": "org3MSP",
+           "certificateAuthorities": [
+               "ca.org3.test.com"
+            ],
+            "adminPrivateKey": {
+				"path": "./crypto/org3/admin/msp/keystore/priv_sk"
+			},
+			"signedCert": {
+				"path": "./crypto/org3/admin/msp/signcerts/Admin@org3.test.com-cert.pem"
+			},
+            "peers": [
+				"peer0.org3.test.com",
+				"peer1.org3.test.com" ]
+				}
+    },
+	"peers": {
+  "peer0.org1.test.com": {
+        "url": "grpcs://localhost:7051",
+        "eventUrl": "grpcs://localhost:7053",
+        "grpcOptions": {
+            "ssl-target-name-override": "peer0.org1.test.com"
+        },
+        "tlsCACerts": {
+            "path": "./crypto/org1/tls/peer0/ca.crt"
+        }
+    },
+  "peer1.org1.test.com": {
+        "url": "grpcs://localhost:8051",
+        "eventUrl": "grpcs://localhost:8053",
+        "grpcOptions": {
+            "ssl-target-name-override": "peer1.org1.test.com"
+        },
+        "tlsCACerts": {
+            "path": "./crypto/org1/tls/peer1/ca.crt"
+        }
+    },
+  "peer0.org2.test.com": {
+        "url": "grpcs://localhost:9051",
+        "eventUrl": "grpcs://localhost:9053",
+        "grpcOptions": {
+            "ssl-target-name-override": "peer0.org2.test.com"
+        },
+        "tlsCACerts": {
+            "path": "./crypto/org2/tls/peer0/ca.crt"
+        }
+    },
+  "peer1.org2.test.com": {
+        "url": "grpcs://localhost:10051",
+        "eventUrl": "grpcs://localhost:10053",
+        "grpcOptions": {
+            "ssl-target-name-override": "peer1.org2.test.com"
+        },
+        "tlsCACerts": {
+            "path": "./crypto/org2/tls/peer1/ca.crt"
+        }
+    },
+  "peer0.org3.test.com": {
+        "url": "grpcs://localhost:11051",
+        "eventUrl": "grpcs://localhost:11053",
+        "grpcOptions": {
+            "ssl-target-name-override": "peer0.org3.test.com"
+        },
+        "tlsCACerts": {
+            "path": "./crypto/org3/tls/peer0/ca.crt"
+        }
+    },
+  "peer1.org3.test.com": {
+        "url": "grpcs://localhost:12051",
+        "eventUrl": "grpcs://localhost:12053",
+        "grpcOptions": {
+            "ssl-target-name-override": "peer1.org3.test.com"
+        },
+        "tlsCACerts": {
+            "path": "./crypto/org3/tls/peer1/ca.crt"
+        }
+    }
+   },
+	"certificateAuthorities": {
+  "ca.org1.test.com": {
+        "url": "https://localhost:7054",
+        "httpOptions": {
+		    "verify": false
+		},
+        "tlsCACerts": {
+            "path": "./crypto/org1/tls/ca/ca.org1.test.com-cert.pem"
+        },
+        "registrar": [
+            {
+                "enrollId": "testorg1",
+                "enrollSecret": "IGCnetqork"
+            }
+        ]
+    },
+  "ca.org2.test.com": {
+        "url": "https://localhost:8054",
+        "httpOptions": {
+		    "verify": false
+		},
+        "tlsCACerts": {
+            "path": "./crypto/org2/tls/ca/ca.org2.test.com-cert.pem"
+        },
+        "registrar": [
+            {
+                "enrollId": "testorg2",
+                "enrollSecret": "IGCnetwwork"
+            }
+        ]
+    },
+  "ca.org3.test.com": {
+        "url": "https://localhost:9054",
+        "httpOptions": {
+		    "verify": false
+		},
+        "tlsCACerts": {
+            "path": "./crypto/org3/tls/ca/ca.org3.test.com-cert.pem"
+        },
+        "registrar": [
+            {
+                "enrollId": "testorg3",
+                "enrollSecret": "IGCnetwork"
+            }
+        ]
+    }
+},
+	"orderers": {
+		"orderer1.orderer.test.com": {
+			"url": "grpcs://localhost:7050",
+			"grpcOptions": {
+				"ssl-target-name-override": "orderer1.orderer.test.com"
+			},
+			"tlsCACerts": {
+				"path": "./crypto/orderer/orderer1/tls/ca.crt"
+			}
+		},
+		"orderer2.orderer.test.com": {
+			"url": "grpcs://localhost:8050",
+			"grpcOptions": {
+				"ssl-target-name-override": "orderer2.orderer.test.com"
+			},
+			"tlsCACerts": {
+				"path": "./crypto/orderer/orderer2/tls/ca.crt"
+			}
+		},
+		"orderer3.orderer.test.com": {
+			"url": "grpcs://localhost:9050",
+			"grpcOptions": {
+				"ssl-target-name-override": "orderer3.orderer.test.com"
+			},
+			"tlsCACerts": {
+				"path": "./crypto/orderer/orderer3/tls/ca.crt"
+			}
+		}
+    }
+}
