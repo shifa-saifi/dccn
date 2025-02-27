@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const certnetController = require('../controllers/certnetController');
-
+const certnetController = require('../controllers/certNetController');
 router.post('/student', certnetController.createStudent);
 router.get('/student/:studentId', certnetController.getStudent);
 router.post('/certificate', certnetController.issueCertificate);

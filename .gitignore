@@ -1,0 +1,39 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore log files
+*.log
+
+# Ignore environment variable files
+.env
+
+# Ignore build directories
+dist/
+build/
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+*.iml
+
+portal/node_modules/
+portal/dist/
+portal/build/
+portal/.env
+portal/.env.local
+portal/.env.development
+portal/.env.production
+portal/.env.test
+portal/.next/
+
+apiServer/node_modules/
+apiServer/dist/
+apiServer/build/
