@@ -1,16 +1,10 @@
-const router = require('express').Router()
-const passport = require('passport')
+const express = require('express');
+const router = express.Router();
+const certnetController = require('../controllers/certnetController');
 
-const loan= require('../controllers/loan');
-const shipment = require('../controllers/shipment');
+router.post('/student', certnetController.createStudent);
+router.get('/student/:studentId', certnetController.getStudent);
+router.post('/certificate', certnetController.issueCertificate);
+router.post('/certificate/verify', certnetController.verifyCertificate);
 
-router.post('/createLoan',loan.createLoan);
-
-router.post('/createShipment', shipment.createShipment );
-
-router.put('/shipmentStatus', shipment.updateShipment);
-
-router.get('/shipmentStatus', shipment.getShipment);
-
-
-module.exports = router
+module.exports = router;

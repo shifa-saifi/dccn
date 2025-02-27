@@ -1,54 +1,47 @@
-const { CustomError } = require("./HandleResponseError");
-const { CHAINCODE_NAMES } = require("./helper");
+// schema.js
+'use strict';
 
+const Joi = require('joi');
 
-const Loan_SCHEMA = [
-  { "name": "Id" },
-  { "name": "CreatedOn" },
-  { "name": "CreatedBy" },
-  { "name": "IsDelete" },
-  { "name": "IsProcessed" },
-  { "name": "LoanId" },
-  { "name": "FirstName" },
-  { "name": "LastName" },
-  { "name": "DateOfBirth" },
-  { "name": "Gender" },
-  { "name": "MobileNum" },
-  { "name": "EmailId" },
-  { "name": "AadharCard" },
-  { "name": "PanCard" },
-  { "name": "LoanAmount" },
-  { "name": "LoanType" },
-  { "name": "IssuerName" },
-  { "name": "CIBIL" },
-];
+/**
+ * Schema for creating a new Student
+ */
+const createStudentSchema = Joi.object({
+  studentId: Joi.string().required(),
+  name: Joi.string().required(),
+  email: Joi.string().email().required()
+});
 
-const Shipment_SCHEMA = [
-  { "name": "Id" },
-  { "name": "CreatedOn" },
-  { "name": "CreatedBy" },
-  { "name": "IsDelete" },
-  { "name": "IsHidden" },
-  { "name": "IsProcessed" },
-  { "name": "CurrentLocation" },
-  { "name": "ShipmentId" },
-  { "name": "Product" },
-  { "name": "StartDate" },
-  { "name": "Quantity" },
-  { "name": "Value" },
-];
+/**
+ * Schema for issuing a new Certificate
+ */
+const issueCertificateSchema = Joi.object({
+  studentId: Joi.string().required(),
+  courseId: Joi.string().required(),
+  gradeReceived: Joi.string().required(),
+  originalHash: Joi.string().required()
+});
 
-exports.getSchema = (chaincodeName) => {
-  switch (chaincodeName) {
-    case CHAINCODE_NAMES.LOAN:
-      return Loan_SCHEMA;
-    case CHAINCODE_NAMES.SHIPMENT:
-      return Shipment_SCHEMA;
+/**
+ * Schema for verifying a Certificate
+ */
+const verifyCertificateSchema = Joi.object({
+  studentId: Joi.string().required(),
+  courseId: Joi.string().required(),
+  currentHash: Joi.string().required()
+});
 
-    default:
-      throw new CustomError({
-        code: 404,
-        message: `Schema for chaincodename : ${chaincodeName} does not exists`,
-      });
-  }
+/**
+ * Schema for (optional) retrieving a student by ID via query param,
+ * if you do query-based input. (Example only)
+ */
+// const getStudentSchema = Joi.object({
+//   studentId: Joi.string().required()
+// });
+
+module.exports = {
+  createStudentSchema,
+  issueCertificateSchema,
+  verifyCertificateSchema
+  // getStudentSchema
 };
