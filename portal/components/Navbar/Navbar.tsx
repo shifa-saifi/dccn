@@ -5,8 +5,6 @@ import {
   IconButton,
   Box,
   Button,
-  Menu,
-  MenuItem,
   Drawer,
   List,
   ListItem,
@@ -33,11 +31,20 @@ const Navbar = () => {
   ];
 
   const drawerContent = (
-    <Box onClick={() => setDrawerOpen(false)} sx={{ width: 250 }}>
+    <Box onClick={() => setDrawerOpen(false)} sx={{ width: 250, py: 2 }}>
+      <Logo />
       <List>
         {menuLinks.map((link) => (
           <ListItem key={link.title} disablePadding>
-            <ListItemButton component={Link} href={link.path}>
+            <ListItemButton
+              component={Link}
+              href={link.path}
+              sx={{
+                fontSize: '16px',
+                fontWeight: 'bold',
+                '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.1)' },
+              }}
+            >
               {link.title}
             </ListItemButton>
           </ListItem>
@@ -47,16 +54,28 @@ const Navbar = () => {
   );
 
   return (
-    <AppBar position="sticky" color="primary">
+    <AppBar position="sticky" sx={{ bgcolor: '#0074D9', boxShadow: '0px 4px 10px rgba(0,0,0,0.2)' }}>
       <Toolbar>
-        {/* Insert Logo Component */}
+        {/* Logo */}
         <Logo />
 
-        {/* Desktop Menu Links */}
+        {/* Desktop Menu */}
         {!isMobile && (
           <Box sx={{ display: 'flex', ml: 'auto' }}>
             {menuLinks.map((link) => (
-              <Button key={link.title} color="inherit" component={Link} href={link.path}>
+              <Button
+                key={link.title}
+                color="inherit"
+                component={Link}
+                href={link.path}
+                sx={{
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  textTransform: 'none',
+                  mx: 1.5,
+                  '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' },
+                }}
+              >
                 {link.title}
               </Button>
             ))}

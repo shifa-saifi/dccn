@@ -1,5 +1,5 @@
 module.exports = {
-    mongoURI: "mongodb://localhost:27017/testv1",
+    mongoURI: "mongodb+srv://ravirashisingh16:LtvJCVsbGJabrMWA@injazserver.w3swxxj.mongodb.net/testv1",
     secretOrKey: 'thisismysecret',
     EMAIL_CONFIG: {
         SMTP_HOST: "smtp.gmail.com",
