@@ -37,3 +37,8 @@ portal/.next/
 apiServer/node_modules/
 apiServer/dist/
 apiServer/build/
+
+
+
+portal/package-lock.json
+apiServer/package-lock.json

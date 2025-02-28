@@ -1,51 +1,63 @@
+'use client';
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Card, CardContent, Grid, Paper } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  TextField,
+  Button,
+  Grid,
+  Snackbar,
+} from '@mui/material';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import LinkIcon from '@mui/icons-material/Link';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { QRCodeCanvas } from 'qrcode.react';
 
 const ShareCertificate = () => {
   const [certificateId, setCertificateId] = useState('');
-  const [shareLink, setShareLink] = useState('');
-  const [qrCode, setQrCode] = useState('');
+  const [shareableLink, setShareableLink] = useState('');
+  const [qrCodeData, setQrCodeData] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const generateLink = () => {
-    if (!certificateId) return alert('Please enter a Certificate ID.');
-    const generatedLink = `https://certificates.com/share/${certificateId}`;
-    setShareLink(generatedLink);
+  const handleGenerateLink = () => {
+    if (!certificateId) {
+      setSnackbarMessage('Please enter a Certificate ID');
+      setSnackbarOpen(true);
+      return;
+    }
+    const generatedLink = `${window.location.origin}/certificate/view/${certificateId}`;
+    setShareableLink(generatedLink);
+    navigator.clipboard.writeText(generatedLink);
+    setSnackbarMessage('Link generated and copied to clipboard!');
+    setSnackbarOpen(true);
   };
 
-  const generateQRCode = () => {
-    if (!certificateId) return alert('Please enter a Certificate ID.');
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-      `https://certificates.com/share/${certificateId}`
-    )}`;
-    setQrCode(qrCodeUrl);
+  const handleGenerateQRCode = () => {
+    if (!certificateId) {
+      setSnackbarMessage('Please enter a Certificate ID');
+      setSnackbarOpen(true);
+      return;
+    }
+    const qrData = `${window.location.origin}/certificate/view/${certificateId}`;
+    setQrCodeData(qrData);
   };
 
   return (
-    <Box sx={{ maxWidth: 900, mx: 'auto', py: 6 }}>
-      <Typography variant="h4" align="center" fontWeight="bold" gutterBottom sx={{ color: '#0074D9' }}>
+    <Box sx={{ p: 4 }}>
+      <Typography variant="h4" align="center" fontWeight="bold" gutterBottom>
         Share Certificate
       </Typography>
-      <Typography variant="body1" align="center" sx={{ mb: 4, color: 'text.secondary' }}>
+      <Typography variant="body1" align="center" sx={{ mb: 4 }}>
         Securely share your certificate using a QR code or a unique link.
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
-        {/* Generate Shareable Link */}
         <Grid item xs={12} md={6}>
-          <Paper
-            sx={{
-              p: 4,
-              boxShadow: '0px 5px 15px rgba(0,0,0,0.2)',
-              borderRadius: 3,
-              transition: 'transform 0.3s ease-in-out',
-              '&:hover': { transform: 'scale(1.02)' },
-            }}
-          >
+          <Card sx={{ p: 3, boxShadow: 3 }}>
             <CardContent>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 Generate Shareable Link
               </Typography>
               <TextField
@@ -61,38 +73,23 @@ const ShareCertificate = () => {
                 color="primary"
                 fullWidth
                 startIcon={<LinkIcon />}
-                onClick={generateLink}
+                onClick={handleGenerateLink}
               >
                 Generate Link
               </Button>
-
-              {shareLink && (
-                <Box mt={2} textAlign="center">
-                  <Typography variant="body2" sx={{ wordBreak: 'break-word', mb: 1 }}>
-                    {shareLink}
-                  </Typography>
-                  <Button variant="outlined" color="primary" size="small" startIcon={<ContentCopyIcon />} onClick={() => navigator.clipboard.writeText(shareLink)}>
-                    Copy Link
-                  </Button>
-                </Box>
+              {shareableLink && (
+                <Typography variant="body2" sx={{ mt: 2, wordBreak: 'break-all' }}>
+                  <strong>Link:</strong> <a href={shareableLink} target="_blank" rel="noopener noreferrer">{shareableLink}</a>
+                </Typography>
               )}
             </CardContent>
-          </Paper>
+          </Card>
         </Grid>
 
-        {/* Generate QR Code */}
         <Grid item xs={12} md={6}>
-          <Paper
-            sx={{
-              p: 4,
-              boxShadow: '0px 5px 15px rgba(0,0,0,0.2)',
-              borderRadius: 3,
-              transition: 'transform 0.3s ease-in-out',
-              '&:hover': { transform: 'scale(1.02)' },
-            }}
-          >
+          <Card sx={{ p: 3, boxShadow: 3 }}>
             <CardContent>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 Generate QR Code
               </Typography>
               <TextField
@@ -108,20 +105,26 @@ const ShareCertificate = () => {
                 color="secondary"
                 fullWidth
                 startIcon={<QrCodeIcon />}
-                onClick={generateQRCode}
+                onClick={handleGenerateQRCode}
               >
                 Generate QR Code
               </Button>
-
-              {qrCode && (
-                <Box mt={2} textAlign="center">
-                  <img src={qrCode} alt="QR Code" style={{ width: '150px', height: '150px' }} />
+              {qrCodeData && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                  <QRCodeCanvas value={qrCodeData} size={150} />
                 </Box>
               )}
             </CardContent>
-          </Paper>
+          </Card>
         </Grid>
       </Grid>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+      />
     </Box>
   );
 };
