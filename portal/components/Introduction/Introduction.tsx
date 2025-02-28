@@ -5,9 +5,11 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import SchoolIcon from '@mui/icons-material/School';
 import Benefits from './Benefits';
 import NewsUpdates from '../NewsAndFeeds/News';
+import Footer from '../Footer/Footer';
 
 const PlatformIntroduction = () => {
   return (
+    <>
     <Box>
       {/* Hero Section */}
       <Box
@@ -207,7 +209,11 @@ const PlatformIntroduction = () => {
 
       {/* News & Updates Section */}
       <NewsUpdates />
+
+
+        <Footer />
     </Box>
+</>
   );
 };
 
