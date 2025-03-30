@@ -1,22 +1,41 @@
-import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Card, CardContent, Grid } from '@mui/material';
+'use client';
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+} from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const VerifyCertificate = () => {
   const [certificateId, setCertificateId] = useState('');
   const [verificationStatus, setVerificationStatus] = useState('');
+  const [certificates, setCertificates] = useState<any[]>([]); // List of issued/imported certs
+
+  // Load certificates from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('certificates');
+    if (stored) {
+      setCertificates(JSON.parse(stored));
+    }
+  }, []);
 
   const handleVerify = () => {
-    if (!certificateId) {
-      alert('Please enter a valid Certificate ID.');
+    if (!certificateId.trim()) {
+      setVerificationStatus('Please enter a valid Certificate ID.');
       return;
     }
 
-    // Simulating verification (You can replace this with an API call)
-    if (certificateId === '123456') {
-      setVerificationStatus('Certificate is VALID ✅');
+    // Check if certificate exists in stored list
+    const match = certificates.find((cert) => cert.certificateId === certificateId.trim());
+
+    if (match) {
+      setVerificationStatus(`✅ Certificate is VALID. Issued to: ${match.recipientName}`);
     } else {
-      setVerificationStatus('Certificate is INVALID ❌');
+      setVerificationStatus('❌ Certificate is INVALID or not found.');
     }
   };
 
@@ -50,7 +69,6 @@ const VerifyCertificate = () => {
             Enter the certificate ID to verify its authenticity instantly.
           </Typography>
 
-          {/* Certificate ID Input */}
           <TextField
             fullWidth
             label="Certificate ID"
@@ -60,7 +78,6 @@ const VerifyCertificate = () => {
             onChange={(e) => setCertificateId(e.target.value)}
           />
 
-          {/* Verify Button */}
           <Button
             variant="contained"
             color="primary"
@@ -80,9 +97,12 @@ const VerifyCertificate = () => {
             Verify Now
           </Button>
 
-          {/* Verification Status */}
           {verificationStatus && (
-            <Typography variant="h6" fontWeight="bold" sx={{ mt: 3, color: verificationStatus.includes('VALID') ? 'green' : 'red' }}>
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              sx={{ mt: 3, color: verificationStatus.includes('VALID') ? 'green' : 'red' }}
+            >
               {verificationStatus}
             </Typography>
           )}

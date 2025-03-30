@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Card, CardContent, Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Card, CardContent } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 const IssueCertificate = () => {
@@ -17,12 +17,35 @@ const IssueCertificate = () => {
   };
 
   const handleSubmit = () => {
-    if (!certificate.recipientName || !certificate.course || !certificate.dateIssued || !certificate.uniqueId) {
+    const { recipientName, course, dateIssued, uniqueId } = certificate;
+
+    if (!recipientName || !course || !dateIssued || !uniqueId) {
       alert('Please fill all fields before issuing the certificate.');
       return;
     }
 
-    // Navigate to the created certificate page with certificate details
+    const stored = localStorage.getItem('certificates');
+    const certificates = stored ? JSON.parse(stored) : [];
+
+    // Check for duplicate certificate ID
+    const duplicate = certificates.find((c: any) => c.certificateId === uniqueId);
+    if (duplicate) {
+      alert('A certificate with this Unique ID already exists.');
+      return;
+    }
+
+    // Add to localStorage
+    const newCert = {
+      certificateId: uniqueId,
+      recipientName,
+      course,
+      dateIssued,
+      issuerName: 'Decentralized Certification Network', // optional
+    };
+
+    localStorage.setItem('certificates', JSON.stringify([...certificates, newCert]));
+
+    // Navigate to the created certificate page
     const query = new URLSearchParams(certificate).toString();
     router.push(`/certificates/view?${query}`);
   };
@@ -31,7 +54,7 @@ const IssueCertificate = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(to right, #4A90E2, #0074D9)', // Modern gradient background
+        background: 'linear-gradient(to right, #4A90E2, #0074D9)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -57,7 +80,6 @@ const IssueCertificate = () => {
             Fill in the details to issue a new certificate and assign a unique identifier.
           </Typography>
 
-          {/* Form Fields */}
           <TextField
             fullWidth
             label="Recipient Name"
@@ -93,7 +115,6 @@ const IssueCertificate = () => {
             onChange={handleChange}
           />
 
-          {/* Issue Certificate Button */}
           <Button
             variant="contained"
             color="primary"
