@@ -7,6 +7,9 @@ import Benefits from './Benefits';
 import NewsUpdates from '../NewsAndFeeds/News';
 import Footer from '../Footer/Footer';
 
+import Link from 'next/link';
+import CallToAction from '../CallToAction';
+
 const PlatformIntroduction = () => {
   return (
     <>
@@ -193,20 +196,7 @@ const PlatformIntroduction = () => {
       </Container>
 
       {/* Call to Action Section */}
-      <Box sx={{ py: 6, backgroundColor: 'primary.main', color: 'white', textAlign: 'center' }}>
-        <Container>
-          <Typography variant="h4" fontWeight="bold" gutterBottom>
-            Ready to Join the Future of Certification?
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3 }}>
-            Sign up today and experience the security, efficiency, and transparency of blockchain-based certification.
-          </Typography>
-          <Button variant="contained" color="secondary" size="large">
-            Get Started
-          </Button>
-        </Container>
-      </Box>
-
+          <CallToAction />
       {/* News & Updates Section */}
       <NewsUpdates />
 

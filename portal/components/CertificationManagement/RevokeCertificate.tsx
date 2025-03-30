@@ -1,16 +1,32 @@
+'use client';
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Card, CardContent, Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Card, CardContent } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 const RevokeCertificate = () => {
   const [certificateId, setCertificateId] = useState('');
 
   const handleRevoke = () => {
-    if (!certificateId) {
+    if (!certificateId.trim()) {
       alert('Please enter a valid Certificate ID.');
       return;
     }
-    alert(`Certificate with ID ${certificateId} has been revoked.`);
+
+    const stored = localStorage.getItem('certificates');
+    const certificates = stored ? JSON.parse(stored) : [];
+
+    const certExists = certificates.find((c: any) => c.certificateId === certificateId.trim());
+
+    if (!certExists) {
+      alert(`❌ Certificate with ID ${certificateId} not found.`);
+      return;
+    }
+
+    // Remove the certificate
+    const updated = certificates.filter((c: any) => c.certificateId !== certificateId.trim());
+    localStorage.setItem('certificates', JSON.stringify(updated));
+
+    alert(`✅ Certificate with ID ${certificateId} has been revoked.`);
     setCertificateId('');
   };
 
@@ -44,7 +60,6 @@ const RevokeCertificate = () => {
             Enter the unique identifier of the certificate you wish to revoke.
           </Typography>
 
-          {/* Certificate ID Input */}
           <TextField
             fullWidth
             label="Certificate ID"
@@ -54,7 +69,6 @@ const RevokeCertificate = () => {
             onChange={(e) => setCertificateId(e.target.value)}
           />
 
-          {/* Revoke Button */}
           <Button
             variant="contained"
             color="secondary"
