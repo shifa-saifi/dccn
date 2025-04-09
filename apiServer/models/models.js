@@ -75,6 +75,8 @@ const certificateSchema = new Schema({
   }
 });
 
+
+
 const Student = mongoose.model('Student', studentSchema);
 const Certificate = mongoose.model('Certificate', certificateSchema);
 

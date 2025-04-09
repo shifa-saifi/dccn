@@ -1,4 +1,5 @@
 'use client';
+import React, { useState } from 'react';
 import {
   Box,
   Card,
@@ -8,12 +9,10 @@ import {
   Button,
   MenuItem,
 } from '@mui/material';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const SignupPage = () => {
   const router = useRouter();
-
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -33,10 +32,21 @@ const SignupPage = () => {
       return;
     }
 
-    // You could call an API here; for now, store in localStorage
-    localStorage.setItem('currentUser', JSON.stringify(formData));
+    const stored = localStorage.getItem('users');
+    const users = stored ? JSON.parse(stored) : [];
 
-    // Navigate based on user type
+    // Prevent duplicate user
+    const exists = users.find((u: any) => u.email === email);
+    if (exists) {
+      alert('User already exists with this email.');
+      return;
+    }
+
+    const newUser = { name, email, password, userType };
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+
     switch (userType) {
       case 'Admin':
         router.push('/dashboard');
@@ -48,7 +58,7 @@ const SignupPage = () => {
         router.push('/user-wallets');
         break;
       default:
-        break;
+        router.push('/');
     }
   };
 
@@ -77,17 +87,15 @@ const SignupPage = () => {
             sx={{ mb: 2 }}
             onChange={handleChange}
           />
-
           <TextField
             fullWidth
             label="Email"
             name="email"
-            variant="outlined"
             type="email"
+            variant="outlined"
             sx={{ mb: 2 }}
             onChange={handleChange}
           />
-
           <TextField
             fullWidth
             label="Password"
@@ -97,7 +105,6 @@ const SignupPage = () => {
             sx={{ mb: 2 }}
             onChange={handleChange}
           />
-
           <TextField
             fullWidth
             select
@@ -122,6 +129,11 @@ const SignupPage = () => {
           >
             Create Account
           </Button>
+
+          <Typography align="center" sx={{ mt: 2 }}>
+            Already have an account?{' '}
+            <Button size="small" onClick={() => router.push('/login')}>Log In</Button>
+          </Typography>
         </CardContent>
       </Card>
     </Box>

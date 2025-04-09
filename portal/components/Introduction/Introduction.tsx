@@ -37,14 +37,11 @@ const PlatformIntroduction = () => {
           <Typography variant="h6">
             Empowering individuals and institutions with secure, verifiable, and tamper-proof certifications powered by blockchain technology.
           </Typography>
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{ mt: 4 }}
-            size="large"
-          >
-            Learn More
-          </Button>
+          <Link href="/learn-more">
+  <Button variant="contained" color="secondary" size="large" sx={{ mt: 4 }}>
+    Learn More
+  </Button>
+</Link>
         </Container>
       </Box>
 

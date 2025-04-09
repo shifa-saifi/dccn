@@ -31,18 +31,22 @@ const LoginPage = () => {
       return;
     }
 
-    const storedUser = localStorage.getItem('currentUser');
-    const parsed = storedUser ? JSON.parse(storedUser) : null;
+    const storedUsers = localStorage.getItem('users');
+    const users = storedUsers ? JSON.parse(storedUsers) : [];
 
-    if (!parsed || parsed.email !== email || parsed.password !== password) {
+    const matchedUser = users.find(
+      (user: any) => user.email === email && user.password === password
+    );
+
+    if (!matchedUser) {
       setError('Invalid email or password.');
       return;
     }
 
+    localStorage.setItem('currentUser', JSON.stringify(matchedUser));
     setError('');
 
-    // Navigate based on user role
-    switch (parsed.userType) {
+    switch (matchedUser.userType) {
       case 'Admin':
         router.push('/dashboard');
         break;
@@ -83,7 +87,6 @@ const LoginPage = () => {
             sx={{ mb: 2 }}
             onChange={handleChange}
           />
-
           <TextField
             fullWidth
             label="Password"
@@ -104,23 +107,14 @@ const LoginPage = () => {
             variant="contained"
             color="primary"
             fullWidth
-            sx={{
-              py: 1.3,
-              fontWeight: 'bold',
-              borderRadius: 2,
-              mt: 1,
-            }}
             onClick={handleLogin}
+            sx={{ py: 1.3, fontWeight: 'bold', borderRadius: 2 }}
           >
             Log In
           </Button>
 
-          <Typography
-            variant="body2"
-            align="center"
-            sx={{ mt: 2 }}
-          >
-            Don't have an account?{' '}
+          <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+            Don&apos;t have an account?{' '}
             <Button size="small" onClick={() => router.push('/signup')}>
               Sign Up
             </Button>
