@@ -1,16 +1,32 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Tabs, Tab, Paper } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import IssueCertificate from './IssueCertificate';
-import VerifyCertificate from './VerifyCertificate';
-import RevokeCertificate from './RevokeCertificate';
+import IssueCertificate from './IssueCertificate'; 
+import VerifyCertificate from './VerifyCertificate'; 
+import RevokeCertificate from './RevokeCertificate'; 
 
 const CertificationTabs = () => {
   const [activeTab, setActiveTab] = useState(0);
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  useEffect(() => {
+    const storedTab = localStorage.getItem('activeCertTab');
+    const parsed = parseInt(storedTab || '0');
+    if (!isNaN(parsed)) setActiveTab(parsed);
+  }, []);
+
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
+    localStorage.setItem('activeCertTab', newValue.toString());
+  };
+
+  const tabContent = () => {
+    switch (activeTab) {
+      case 0: return <IssueCertificate />;
+      case 1: return <VerifyCertificate />;
+      case 2: return <RevokeCertificate />;
+      default: return null;
+    }
   };
 
   return (
@@ -21,7 +37,7 @@ const CertificationTabs = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '20px',
+        padding: 2,
       }}
     >
       <Paper
@@ -31,16 +47,16 @@ const CertificationTabs = () => {
           borderRadius: 4,
           boxShadow: '0px 5px 20px rgba(0,0,0,0.3)',
           background: '#fff',
-          p: 3,
+          p: { xs: 2, md: 4 },
         }}
       >
-        {/* Tabs Navigation */}
         <Tabs
           value={activeTab}
           onChange={handleTabChange}
           centered
           indicatorColor="primary"
           textColor="primary"
+          variant="fullWidth"
           sx={{ mb: 4 }}
         >
           <Tab label="Issue Certificate" />
@@ -48,24 +64,17 @@ const CertificationTabs = () => {
           <Tab label="Revoke Certificate" />
         </Tabs>
 
-        {/* Tab Content with Smooth Transitions */}
-        <Box sx={{ mt: 3 }}>
+        <Box sx={{ mt: 3, minHeight: 400 }}>
           <AnimatePresence mode="wait">
-            {activeTab === 0 && (
-              <motion.div key="issue" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
-                <IssueCertificate />
-              </motion.div>
-            )}
-            {activeTab === 1 && (
-              <motion.div key="verify" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
-                <VerifyCertificate />
-              </motion.div>
-            )}
-            {activeTab === 2 && (
-              <motion.div key="revoke" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3 }}>
-                <RevokeCertificate />
-              </motion.div>
-            )}
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.35 }}
+            >
+              {tabContent()}
+            </motion.div>
           </AnimatePresence>
         </Box>
       </Paper>

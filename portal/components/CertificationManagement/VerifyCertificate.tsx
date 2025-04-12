@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -7,35 +7,52 @@ import {
   Button,
   Card,
   CardContent,
+  CircularProgress,
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const VerifyCertificate = () => {
   const [certificateId, setCertificateId] = useState('');
   const [verificationStatus, setVerificationStatus] = useState('');
-  const [certificates, setCertificates] = useState<any[]>([]); // List of issued/imported certs
+  const [loading, setLoading] = useState(false);
 
-  // Load certificates from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem('certificates');
-    if (stored) {
-      setCertificates(JSON.parse(stored));
-    }
-  }, []);
-
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (!certificateId.trim()) {
       setVerificationStatus('Please enter a valid Certificate ID.');
       return;
     }
 
-    // Check if certificate exists in stored list
-    const match = certificates.find((cert) => cert.certificateId === certificateId.trim());
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setVerificationStatus('You must be logged in to verify a certificate.');
+      return;
+    }
 
-    if (match) {
-      setVerificationStatus(`✅ Certificate is VALID. Issued to: ${match.recipientName}`);
-    } else {
-      setVerificationStatus('❌ Certificate is INVALID or not found.');
+    setLoading(true);
+    setVerificationStatus('');
+
+    try {
+      const res = await fetch('/api/cert/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ certId: certificateId.trim() }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data?.valid) {
+        const cert = data.cert;
+        setVerificationStatus(`✅ Certificate is VALID. Issued to: ${cert.recipient}, Course: ${cert.course}, Status: ${cert.status}`);
+      } else {
+        setVerificationStatus('❌ Certificate is INVALID or not yet verified.');
+      }
+    } catch (err) {
+      setVerificationStatus('❌ Error verifying certificate. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,8 +110,9 @@ const VerifyCertificate = () => {
               '&:hover': { backgroundColor: '#005bb5' },
             }}
             onClick={handleVerify}
+            disabled={loading}
           >
-            Verify Now
+            {loading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : 'Verify Now'}
           </Button>
 
           {verificationStatus && (

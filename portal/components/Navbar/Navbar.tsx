@@ -16,6 +16,8 @@ import {
   Tooltip,
   useMediaQuery,
   useTheme,
+  Divider,
+  Typography,
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
@@ -28,23 +30,31 @@ const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [user, setUser] = useState<any>(null);
 
   const router = useRouter();
+  const profileMenuOpen = Boolean(anchorEl);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    setUserRole(user.userType || null);
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('currentUser');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setUser(parsed);
+        }
+      } catch (err) {
+        console.error('Failed to load user data:', err);
+      }
+    }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('currentUser');
-    setUserRole(null);
-    router.push('/signup');
+    localStorage.removeItem('token');
+    router.push('/login');
   };
-
-  const profileMenuOpen = Boolean(anchorEl);
 
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -56,11 +66,11 @@ const Navbar = () => {
 
   const menuLinks = [
     { title: 'Home', path: '/' },
-    ...(userRole === 'Admin'
+    ...(user?.userType === 'Admin'
       ? [{ title: 'Dashboard', path: '/dashboard' }]
-      : userRole === 'Institution'
+      : user?.userType === 'Institution'
       ? [{ title: 'Certification Management', path: '/certification-management' }]
-      : userRole === 'Individual'
+      : user?.userType === 'Individual'
       ? [{ title: 'User Wallets', path: '/user-wallets' }]
       : []),
     { title: 'Help & Support', path: '/help-support' },
@@ -76,7 +86,7 @@ const Navbar = () => {
             </ListItemButton>
           </ListItem>
         ))}
-        {userRole && (
+        {user && (
           <ListItemButton onClick={handleLogout}>Logout</ListItemButton>
         )}
       </List>
@@ -88,20 +98,26 @@ const Navbar = () => {
       <Toolbar>
         <Logo />
 
+        {/* Desktop Navigation */}
         {!isMobile && (
           <Box sx={{ display: 'flex', ml: 'auto', gap: 2 }}>
             {menuLinks.map((link) => (
-              <Button key={link.title} color="inherit" component={Link} href={link.path}>
+              <Button
+                key={link.title}
+                color="inherit"
+                component={Link}
+                href={link.path}
+              >
                 {link.title}
               </Button>
             ))}
 
-            {userRole && (
+            {user && (
               <>
-                <Tooltip title="Account">
+                <Tooltip title="User Profile">
                   <IconButton onClick={handleProfileClick}>
                     <Avatar sx={{ bgcolor: 'secondary.main' }}>
-                      {userRole.charAt(0)}
+                      {user.name?.charAt(0).toUpperCase() || user.userType?.charAt(0)}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
@@ -119,7 +135,23 @@ const Navbar = () => {
                     horizontal: 'right',
                   }}
                 >
-                  <MenuItem disabled>{userRole} User</MenuItem>
+                  <Box sx={{ px: 2, py: 1.5 }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      {user.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {user.email}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Role: {user.userType}
+                    </Typography>
+                  </Box>
+
+                  <Divider sx={{ my: 1 }} />
+{/* 
+                  <MenuItem onClick={() => { handleProfileClose(); router.push('/profile'); }}>
+                    View Profile
+                  </MenuItem> */}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </>
@@ -127,6 +159,7 @@ const Navbar = () => {
           </Box>
         )}
 
+        {/* Mobile Navigation */}
         {isMobile && (
           <>
             <IconButton edge="end" color="inherit" onClick={() => setDrawerOpen(true)}>

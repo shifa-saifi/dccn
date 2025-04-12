@@ -1,33 +1,59 @@
 'use client';
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Card, CardContent } from '@mui/material';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+} from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 const RevokeCertificate = () => {
   const [certificateId, setCertificateId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState('');
 
-  const handleRevoke = () => {
+  const handleRevoke = async () => {
     if (!certificateId.trim()) {
-      alert('Please enter a valid Certificate ID.');
+      setFeedback('Please enter a valid Certificate ID.');
       return;
     }
 
-    const stored = localStorage.getItem('certificates');
-    const certificates = stored ? JSON.parse(stored) : [];
-
-    const certExists = certificates.find((c: any) => c.certificateId === certificateId.trim());
-
-    if (!certExists) {
-      alert(`❌ Certificate with ID ${certificateId} not found.`);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setFeedback('🔐 You must be logged in to revoke a certificate.');
       return;
     }
 
-    // Remove the certificate
-    const updated = certificates.filter((c: any) => c.certificateId !== certificateId.trim());
-    localStorage.setItem('certificates', JSON.stringify(updated));
+    setLoading(true);
+    setFeedback('');
 
-    alert(`✅ Certificate with ID ${certificateId} has been revoked.`);
-    setCertificateId('');
+    try {
+      const res = await fetch('/api/cert/revoke', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ certId: certificateId.trim() }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data?.success) {
+        setFeedback(`✅ Certificate ID ${certificateId} has been successfully revoked.`);
+        setCertificateId('');
+      } else {
+        setFeedback(data?.error || '❌ Failed to revoke certificate.');
+      }
+    } catch (err) {
+      setFeedback('⚠️ Server error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -84,9 +110,19 @@ const RevokeCertificate = () => {
               '&:hover': { backgroundColor: '#B71C1C' },
             }}
             onClick={handleRevoke}
+            disabled={loading}
           >
-            Revoke Certificate
+            {loading ? <CircularProgress size={22} sx={{ color: 'white' }} /> : 'Revoke Certificate'}
           </Button>
+
+          {feedback && (
+            <Typography
+              variant="body1"
+              sx={{ mt: 3, color: feedback.includes('✅') ? 'green' : 'red' }}
+            >
+              {feedback}
+            </Typography>
+          )}
         </CardContent>
       </Card>
     </Box>

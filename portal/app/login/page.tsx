@@ -7,23 +7,21 @@ import {
   Typography,
   TextField,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
   const router = useRouter();
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: '',
-  });
-
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const { email, password } = credentials;
 
     if (!email || !password) {
@@ -31,33 +29,53 @@ const LoginPage = () => {
       return;
     }
 
-    const storedUsers = localStorage.getItem('users');
-    const users = storedUsers ? JSON.parse(storedUsers) : [];
-
-    const matchedUser = users.find(
-      (user: any) => user.email === email && user.password === password
-    );
-
-    if (!matchedUser) {
-      setError('Invalid email or password.');
-      return;
-    }
-
-    localStorage.setItem('currentUser', JSON.stringify(matchedUser));
+    setLoading(true);
     setError('');
 
-    switch (matchedUser.userType) {
-      case 'Admin':
-        router.push('/dashboard');
-        break;
-      case 'Institution':
-        router.push('/certification-management');
-        break;
-      case 'Individual':
-        router.push('/user-wallets');
-        break;
-      default:
-        router.push('/');
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        console.error('Login error:', data.error); // 👈 Log detailed error
+        setError(data.error || 'Server error. Please try again.');
+      }
+      if (!data.token) {
+        setError('Login failed. Please try again.');
+        return;
+      }
+      if (data.error) {
+        setError(data.error);
+        return;
+      }      
+
+      // Store JWT & user info in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('currentUser', JSON.stringify(data.user));
+
+      // Redirect based on user type
+      switch (data.user.role) {
+        case 'Admin':
+          router.push('/dashboard');
+          break;
+        case 'Institution':
+          router.push('/certification-management');
+          break;
+        case 'Individual':
+          router.push('/user-wallets');
+          break;
+        default:
+          router.push('/');
+      }
+    } catch (err) {
+      setError('Server error. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,8 +127,9 @@ const LoginPage = () => {
             fullWidth
             onClick={handleLogin}
             sx={{ py: 1.3, fontWeight: 'bold', borderRadius: 2 }}
+            disabled={loading}
           >
-            Log In
+            {loading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : 'Log In'}
           </Button>
 
           <Typography variant="body2" align="center" sx={{ mt: 2 }}>

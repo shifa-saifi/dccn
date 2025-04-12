@@ -1,12 +1,27 @@
 'use client';
+
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Card, CardContent } from '@mui/material';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext'; // assuming context exists
 
 const IssueCertificate = () => {
   const router = useRouter();
+  const { user } = useAuth() || {};
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
   const [certificate, setCertificate] = useState({
     recipientName: '',
+    recipientEmail: '',
     course: '',
     dateIssued: '',
     uniqueId: '',
@@ -16,38 +31,54 @@ const IssueCertificate = () => {
     setCertificate({ ...certificate, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = () => {
-    const { recipientName, course, dateIssued, uniqueId } = certificate;
+  const handleSubmit = async () => {
+    const { recipientName, recipientEmail, course, dateIssued, uniqueId } = certificate;
 
-    if (!recipientName || !course || !dateIssued || !uniqueId) {
-      alert('Please fill all fields before issuing the certificate.');
+    if (!recipientName || !recipientEmail || !course || !dateIssued || !uniqueId) {
+      setErrorMsg('Please fill all fields before issuing the certificate.');
       return;
     }
 
-    const stored = localStorage.getItem('certificates');
-    const certificates = stored ? JSON.parse(stored) : [];
-
-    // Check for duplicate certificate ID
-    const duplicate = certificates.find((c: any) => c.certificateId === uniqueId);
-    if (duplicate) {
-      alert('A certificate with this Unique ID already exists.');
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setErrorMsg('You must be logged in to issue a certificate.');
       return;
     }
 
-    // Add to localStorage
-    const newCert = {
-      certificateId: uniqueId,
-      recipientName,
-      course,
-      dateIssued,
-      issuerName: 'Decentralized Certification Network', // optional
-    };
+    setLoading(true);
+    setErrorMsg('');
 
-    localStorage.setItem('certificates', JSON.stringify([...certificates, newCert]));
+    try {
+      const res = await fetch('/api/cert/issue', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          recipientName,
+          recipientEmail,
+          course,
+          issueDate: dateIssued,
+          certId: uniqueId,
+          issuerEmail: user?.email, // mapping issuer to certificate
+        }),
+      });
 
-    // Navigate to the created certificate page
-    const query = new URLSearchParams(certificate).toString();
-    router.push(`/certificates/view?${query}`);
+      const data = await res.json();
+
+      if (res.ok && data?.success) {
+        alert('Certificate issued successfully!');
+        router.push('/certificates/list');
+      } else {
+        setErrorMsg(data?.error || 'Something went wrong. Try again.');
+      }
+    } catch (error) {
+      console.error('Error issuing certificate:', error);
+      setErrorMsg('Server error. Try again later.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,17 +116,29 @@ const IssueCertificate = () => {
             label="Recipient Name"
             name="recipientName"
             variant="outlined"
-            sx={{ mb: 2, backgroundColor: '#f9f9f9', borderRadius: '5px' }}
+            sx={{ mb: 2, backgroundColor: '#f9f9f9' }}
             onChange={handleChange}
           />
+
+          <TextField
+            fullWidth
+            label="Recipient Email"
+            name="recipientEmail"
+            type="email"
+            variant="outlined"
+            sx={{ mb: 2, backgroundColor: '#f9f9f9' }}
+            onChange={handleChange}
+          />
+
           <TextField
             fullWidth
             label="Course/Program"
             name="course"
             variant="outlined"
-            sx={{ mb: 2, backgroundColor: '#f9f9f9', borderRadius: '5px' }}
+            sx={{ mb: 2, backgroundColor: '#f9f9f9' }}
             onChange={handleChange}
           />
+
           <TextField
             fullWidth
             label="Date Issued"
@@ -103,22 +146,30 @@ const IssueCertificate = () => {
             type="date"
             InputLabelProps={{ shrink: true }}
             variant="outlined"
-            sx={{ mb: 2, backgroundColor: '#f9f9f9', borderRadius: '5px' }}
+            sx={{ mb: 2, backgroundColor: '#f9f9f9' }}
             onChange={handleChange}
           />
+
           <TextField
             fullWidth
             label="Unique Identifier"
             name="uniqueId"
             variant="outlined"
-            sx={{ mb: 2, backgroundColor: '#f9f9f9', borderRadius: '5px' }}
+            sx={{ mb: 2, backgroundColor: '#f9f9f9' }}
             onChange={handleChange}
           />
+
+          {errorMsg && (
+            <Typography color="error" sx={{ mb: 2 }}>
+              {errorMsg}
+            </Typography>
+          )}
 
           <Button
             variant="contained"
             color="primary"
             fullWidth
+            disabled={loading}
             sx={{
               mt: 2,
               py: 1.5,
@@ -130,7 +181,7 @@ const IssueCertificate = () => {
             }}
             onClick={handleSubmit}
           >
-            Issue Certificate
+            {loading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : 'Issue Certificate'}
           </Button>
         </CardContent>
       </Card>

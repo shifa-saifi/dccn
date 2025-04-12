@@ -8,6 +8,7 @@ import {
   Typography,
   Button,
   MenuItem,
+  CircularProgress,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
@@ -17,48 +18,65 @@ const SignupPage = () => {
     name: '',
     email: '',
     password: '',
-    userType: '',
+    role: '',
   });
+
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSignup = () => {
-    const { name, email, password, userType } = formData;
+  const handleSignup = async () => {
+    const { name, email, password, role } = formData;
 
-    if (!name || !email || !password || !userType) {
-      alert('Please fill in all fields.');
+    if (!name || !email || !password || !role) {
+      setError('Please fill in all fields.');
       return;
     }
 
-    const stored = localStorage.getItem('users');
-    const users = stored ? JSON.parse(stored) : [];
+    setLoading(true);
+    setError('');
 
-    // Prevent duplicate user
-    const exists = users.find((u: any) => u.email === email);
-    if (exists) {
-      alert('User already exists with this email.');
-      return;
-    }
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      console.log("🚀 ~ handleSignup ~ res:", res)
 
-    const newUser = { name, email, password, userType };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
+      const data = await res.json();
+      console.log("🚀 ~ handleSignup ~ data:", data)
 
-    switch (userType) {
-      case 'Admin':
-        router.push('/dashboard');
-        break;
-      case 'Institution':
-        router.push('/certification-management');
-        break;
-      case 'Individual':
-        router.push('/user-wallets');
-        break;
-      default:
-        router.push('/');
+      if (!res.ok) {
+        setError(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      // Save JWT & user info
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('currentUser', JSON.stringify(data.user));
+
+      // Redirect based on role
+      switch (data.user.role) {
+        case 'Admin':
+          router.push('/dashboard');
+          break;
+        case 'Institution':
+          router.push('/certification-management');
+          break;
+        case 'Individual':
+          router.push('/user-wallets');
+          break;
+        default:
+          router.push('/');
+      }
+    } catch (err) {
+      setError('⚠️ Server error. Try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,10 +127,10 @@ const SignupPage = () => {
             fullWidth
             select
             label="User Type"
-            name="userType"
+            name="role"
             variant="outlined"
             sx={{ mb: 3 }}
-            value={formData.userType}
+            value={formData.role}
             onChange={handleChange}
           >
             <MenuItem value="Admin">Admin</MenuItem>
@@ -120,19 +138,28 @@ const SignupPage = () => {
             <MenuItem value="Individual">Individual</MenuItem>
           </TextField>
 
+          {error && (
+            <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+              {error}
+            </Typography>
+          )}
+
           <Button
             variant="contained"
             color="primary"
             fullWidth
             onClick={handleSignup}
             sx={{ py: 1.3, fontWeight: 'bold', borderRadius: 2 }}
+            disabled={loading}
           >
-            Create Account
+            {loading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : 'Create Account'}
           </Button>
 
           <Typography align="center" sx={{ mt: 2 }}>
             Already have an account?{' '}
-            <Button size="small" onClick={() => router.push('/login')}>Log In</Button>
+            <Button size="small" onClick={() => router.push('/login')}>
+              Log In
+            </Button>
           </Typography>
         </CardContent>
       </Card>
