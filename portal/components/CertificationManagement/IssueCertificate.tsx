@@ -21,10 +21,10 @@ const IssueCertificate = () => {
 
   const [certificate, setCertificate] = useState({
     recipientName: '',
-    recipientEmail: '',
+    studentEmail: '',
     course: '',
     dateIssued: '',
-    uniqueId: '',
+    certificateId: '',
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,9 +32,9 @@ const IssueCertificate = () => {
   };
 
   const handleSubmit = async () => {
-    const { recipientName, recipientEmail, course, dateIssued, uniqueId } = certificate;
+    const { recipientName, studentEmail, course, dateIssued, certificateId } = certificate;
 
-    if (!recipientName || !recipientEmail || !course || !dateIssued || !uniqueId) {
+    if (!recipientName || !studentEmail || !course || !dateIssued || !certificateId) {
       setErrorMsg('Please fill all fields before issuing the certificate.');
       return;
     }
@@ -57,11 +57,11 @@ const IssueCertificate = () => {
         },
         body: JSON.stringify({
           recipientName,
-          recipientEmail,
+          studentEmail,
           course,
-          issueDate: dateIssued,
-          certId: uniqueId,
-          issuerEmail: user?.email, // mapping issuer to certificate
+          dateIssued: dateIssued,
+          certificateId: certificateId,
+          issuerEmail: user?.email, 
         }),
       });
 
@@ -123,7 +123,7 @@ const IssueCertificate = () => {
           <TextField
             fullWidth
             label="Recipient Email"
-            name="recipientEmail"
+            name="studentEmail"
             type="email"
             variant="outlined"
             sx={{ mb: 2, backgroundColor: '#f9f9f9' }}
@@ -153,7 +153,7 @@ const IssueCertificate = () => {
           <TextField
             fullWidth
             label="Unique Identifier"
-            name="uniqueId"
+            name="certificateId"
             variant="outlined"
             sx={{ mb: 2, backgroundColor: '#f9f9f9' }}
             onChange={handleChange}
