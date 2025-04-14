@@ -20,11 +20,11 @@ const IssueCertificate = () => {
   const [errorMsg, setErrorMsg] = useState('');
 
   const [certificate, setCertificate] = useState({
+    certificateId: '',
     recipientName: '',
-    studentEmail: '',
     course: '',
     dateIssued: '',
-    certificateId: '',
+    studentEmail: '',
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,15 +59,15 @@ const IssueCertificate = () => {
           recipientName,
           studentEmail,
           course,
-          dateIssued: dateIssued,
-          certificateId: certificateId,
-          issuerEmail: user?.email, 
+          dateIssued,
+          certificateId,
         }),
       });
 
       const data = await res.json();
+      console.log("🚀 ~ handleSubmit ~ data:", data)
 
-      if (res.ok && data?.success) {
+      if ( data?.certificateId) {
         alert('Certificate issued successfully!');
         router.push('/certificates/list');
       } else {

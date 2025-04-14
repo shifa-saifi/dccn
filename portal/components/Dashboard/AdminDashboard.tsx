@@ -1,20 +1,73 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Grid, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Grid,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import CertificateCard from '../Shared/CertificateCard';
 
 const AdminDashboard = () => {
   const [certificates, setCertificates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+
+  const fetchCertificates = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/certificates/list');
+      const data = await res.json();
+      setCertificates(data.certificates || []);
+    } catch (error) {
+      console.error('Failed to fetch certificates:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleApprove = async (certId: string) => {
+    try {
+      const res = await fetch('/api/certificates/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ certId, approver: 'admin' }),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setAlert({ open: true, message: 'Certificate approved!', severity: 'success' });
+        fetchCertificates();
+      } else {
+        throw new Error(result.message || 'Approval failed');
+      }
+    } catch (err: any) {
+      setAlert({ open: true, message: err.message, severity: 'error' });
+    }
+  };
+
+  const handleReject = async (certId: string) => {
+    try {
+      const res = await fetch('/api/certificates/reject', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ certId }),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setAlert({ open: true, message: 'Certificate rejected.', severity: 'info' });
+        fetchCertificates();
+      } else {
+        throw new Error(result.message || 'Rejection failed');
+      }
+    } catch (err: any) {
+      setAlert({ open: true, message: err.message, severity: 'error' });
+    }
+  };
 
   useEffect(() => {
-    fetch('/api/cert/admin')
-      .then((res) => res.json())
-      .then((data) => {
-        setCertificates(data.certificates || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    fetchCertificates();
   }, []);
 
   return (
@@ -23,20 +76,41 @@ const AdminDashboard = () => {
         Admin Dashboard
       </Typography>
       <Typography variant="body1" sx={{ mb: 4 }}>
-        Review recently issued certificates and take action.
+        Review and manage all issued certificates.
       </Typography>
 
       {loading ? (
         <CircularProgress />
+      ) : certificates.length === 0 ? (
+        <Typography>No certificates found.</Typography>
       ) : (
         <Grid container spacing={3}>
-          {certificates.map((cert, idx) => (
-            <Grid item xs={12} md={6} lg={4} key={idx}>
-              <CertificateCard data={cert} showActions role="admin" />
-            </Grid>
-          ))}
+          {certificates
+            .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
+            .map((cert) => (
+              <Grid item xs={12} md={6} lg={4} key={cert.id}>
+                <CertificateCard
+                  data={cert}
+                  showActions
+                  role="admin"
+                  onApprove={() => handleApprove(cert.id)}
+                  onReject={() => handleReject(cert.id)}
+                />
+              </Grid>
+            ))}
         </Grid>
       )}
+
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={3000}
+        onClose={() => setAlert({ ...alert, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity={alert.severity as any} variant="filled">
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

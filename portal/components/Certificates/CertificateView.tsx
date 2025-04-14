@@ -31,7 +31,7 @@ const CertificateView = () => {
     recipientName: '',
     course: '',
     dateIssued: '',
-    uniqueId: '',
+    certificateId: '',
   });
 
   useEffect(() => {
@@ -39,14 +39,14 @@ const CertificateView = () => {
       const recipientName = searchParams.get('recipientName');
       const course = searchParams.get('course');
       const dateIssued = searchParams.get('dateIssued');
-      const uniqueId = searchParams.get('uniqueId');
+      const certificateId = searchParams.get('certificateId');
 
-      if (recipientName && course && dateIssued && uniqueId) {
+      if (recipientName && course && dateIssued && certificateId) {
         setCertificate({
           recipientName,
           course,
           dateIssued,
-          uniqueId,
+          certificateId,
         });
       }
     }
@@ -70,7 +70,7 @@ const CertificateView = () => {
     doc.text(`${certificate.course}`, 85, 105);
     doc.setFontSize(14);
     doc.text(`Issued on: ${certificate.dateIssued}`, 70, 120);
-    doc.text(`Certificate ID: ${certificate.uniqueId}`, 70, 135);
+    doc.text(`Certificate ID: ${certificate.certificateId}`, 70, 135);
 
     doc.setFontSize(14);
     doc.text(`_______________________       _______________________`, 50, 170);
@@ -88,7 +88,7 @@ const CertificateView = () => {
   const shareViaEmail = () => {
     const emailSubject = encodeURIComponent('Your Certificate is Ready');
     const emailBody = encodeURIComponent(
-      `Dear ${certificate.recipientName},\n\nYour certificate for "${certificate.course}" has been issued.\nCertificate ID: ${certificate.uniqueId}\nDate Issued: ${certificate.dateIssued}\n\nBest regards,\nCertification Team`
+      `Dear ${certificate.recipientName},\n\nYour certificate for "${certificate.course}" has been issued.\nCertificate ID: ${certificate.certificateId}\nDate Issued: ${certificate.dateIssued}\n\nBest regards,\nCertification Team`
     );
     window.location.href = `mailto:?subject=${emailSubject}&body=${emailBody}`;
   };
@@ -126,7 +126,7 @@ const CertificateView = () => {
           <Typography variant="h6" sx={{ mt: 2 }}>
             Issued on: {certificate.dateIssued}
           </Typography>
-          <Typography variant="h6">Certificate ID: {certificate.uniqueId}</Typography>
+          <Typography variant="h6">Certificate ID: {certificate.certificateId}</Typography>
 
           {/* Signatures */}
           <Box sx={{ mt: 4 }}>

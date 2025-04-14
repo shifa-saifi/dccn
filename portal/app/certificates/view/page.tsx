@@ -13,7 +13,7 @@ const CertificateView = () => {
         recipientName: '',
         course: '',
         dateIssued: '',
-        uniqueId: '',
+        certificateId: '',
     });
 
     const [emailDialogOpen, setEmailDialogOpen] = useState(false);
@@ -25,7 +25,7 @@ const CertificateView = () => {
                 recipientName: searchParams.get('recipientName') || '',
                 course: searchParams.get('course') || '',
                 dateIssued: searchParams.get('dateIssued') || '',
-                uniqueId: searchParams.get('uniqueId') || '',
+                certificateId: searchParams.get('certificateId') || '',
             });
         }
     }, [searchParams]);
@@ -72,7 +72,7 @@ const CertificateView = () => {
         const imgData = canvas.toDataURL('image/png');
 
         const emailSubject = encodeURIComponent('Your Certificate is Ready');
-        const emailBody = encodeURIComponent(`Dear ${certificate.recipientName},\n\nYour certificate for "${certificate.course}" has been issued.\nCertificate ID: ${certificate.uniqueId}\nDate Issued: ${certificate.dateIssued}\n\nBest regards,\nCertification Team`);
+        const emailBody = encodeURIComponent(`Dear ${certificate.recipientName},\n\nYour certificate for "${certificate.course}" has been issued.\nCertificate ID: ${certificate.certificateId}\nDate Issued: ${certificate.dateIssued}\n\nBest regards,\nCertification Team`);
         const mailtoLink = `mailto:${email}?subject=${emailSubject}&body=${emailBody}`;
         
         window.location.href = mailtoLink;
@@ -122,7 +122,7 @@ const CertificateView = () => {
                     <Typography variant="h6" sx={{ mt: 2 }}>
                         Issued on: {certificate.dateIssued}
                     </Typography>
-                    <Typography variant="h6">Certificate ID: {certificate.uniqueId}</Typography>
+                    <Typography variant="h6">Certificate ID: {certificate.certificateId}</Typography>
 
                     <Box sx={{ mt: 4 }}>
                         <Typography variant="h6" sx={{ fontFamily: 'Cursive', fontSize: '20px' }}>

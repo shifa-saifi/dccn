@@ -63,14 +63,16 @@ const Navbar = () => {
   const handleProfileClose = () => {
     setAnchorEl(null);
   };
-
   const menuLinks = [
     { title: 'Home', path: '/' },
-    ...(user?.userType === 'Admin'
-      ? [{ title: 'Dashboard', path: '/dashboard' }]
-      : user?.userType === 'Institution'
+    ...(user?.role === 'Admin'
+      ? [
+          { title: 'Dashboard', path: '/dashboard' },
+          { title: 'Certificate List', path: '/certificates/list' },
+        ]
+      : user?.role === 'Institution'
       ? [{ title: 'Certification Management', path: '/certification-management' }]
-      : user?.userType === 'Individual'
+      : user?.role === 'Individual'
       ? [{ title: 'User Wallets', path: '/user-wallets' }]
       : []),
     { title: 'Help & Support', path: '/help-support' },
@@ -117,7 +119,7 @@ const Navbar = () => {
                 <Tooltip title="User Profile">
                   <IconButton onClick={handleProfileClick}>
                     <Avatar sx={{ bgcolor: 'secondary.main' }}>
-                      {user.name?.charAt(0).toUpperCase() || user.userType?.charAt(0)}
+                      {user.name?.charAt(0).toUpperCase() || user.role?.charAt(0)}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
@@ -143,7 +145,7 @@ const Navbar = () => {
                       {user.email}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      Role: {user.userType}
+                      Role: {user.role}
                     </Typography>
                   </Box>
 

@@ -22,15 +22,15 @@ export async function POST(req: NextRequest) {
     if (existing) {
       return NextResponse.json({ error: 'Certificate ID already exists' }, { status: 409 });
     }
-
+    console.log("🚀 ~ POST ~ existing:", existing)
     const newCert = await prisma.certificate.create({
       data: {
         certificateId,
         recipientName,
         course,
         dateIssued,
-        issuerName: issuerName || 'Decentralized Certification Network',
         studentEmail,
+        issuerName: issuerName || 'Decentralized Certification Network',
         approvedByAdmin: false,
         approvedByInstitute: false,
         rejected: false,
@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(newCert, { status: 201 });
   } catch (error) {
+    console.error('Error creating certificate:', error);
     return NextResponse.json({ error: 'Failed to create certificate' }, { status: 500 });
   }
 }
