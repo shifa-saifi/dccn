@@ -125,7 +125,7 @@ exports.Prisma.CertificateScalarFieldEnum = {
   recipient: 'recipient',
   course: 'course',
   issueDate: 'issueDate',
-  certId: 'certId',
+  certificateId: 'certificateId',
   status: 'status',
   verifiedBy: 'verifiedBy'
 };

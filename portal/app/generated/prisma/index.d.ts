@@ -1976,7 +1976,7 @@ export namespace Prisma {
     recipient: string | null
     course: string | null
     issueDate: Date | null
-    certId: string | null
+    certificateId: string | null
     status: string | null
   }
 
@@ -1986,7 +1986,7 @@ export namespace Prisma {
     recipient: string | null
     course: string | null
     issueDate: Date | null
-    certId: string | null
+    certificateId: string | null
     status: string | null
   }
 
@@ -1996,7 +1996,7 @@ export namespace Prisma {
     recipient: number
     course: number
     issueDate: number
-    certId: number
+    certificateId: number
     status: number
     verifiedBy: number
     _all: number
@@ -2009,7 +2009,7 @@ export namespace Prisma {
     recipient?: true
     course?: true
     issueDate?: true
-    certId?: true
+    certificateId?: true
     status?: true
   }
 
@@ -2019,7 +2019,7 @@ export namespace Prisma {
     recipient?: true
     course?: true
     issueDate?: true
-    certId?: true
+    certificateId?: true
     status?: true
   }
 
@@ -2029,7 +2029,7 @@ export namespace Prisma {
     recipient?: true
     course?: true
     issueDate?: true
-    certId?: true
+    certificateId?: true
     status?: true
     verifiedBy?: true
     _all?: true
@@ -2113,7 +2113,7 @@ export namespace Prisma {
     recipient: string
     course: string
     issueDate: Date
-    certId: string
+    certificateId: string
     status: string
     verifiedBy: string[]
     _count: CertificateCountAggregateOutputType | null
@@ -2141,7 +2141,7 @@ export namespace Prisma {
     recipient?: boolean
     course?: boolean
     issueDate?: boolean
-    certId?: boolean
+    certificateId?: boolean
     status?: boolean
     verifiedBy?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2155,12 +2155,12 @@ export namespace Prisma {
     recipient?: boolean
     course?: boolean
     issueDate?: boolean
-    certId?: boolean
+    certificateId?: boolean
     status?: boolean
     verifiedBy?: boolean
   }
 
-  export type CertificateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "recipient" | "course" | "issueDate" | "certId" | "status" | "verifiedBy", ExtArgs["result"]["certificate"]>
+  export type CertificateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "recipient" | "course" | "issueDate" | "certificateId" | "status" | "verifiedBy", ExtArgs["result"]["certificate"]>
   export type CertificateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -2176,7 +2176,7 @@ export namespace Prisma {
       recipient: string
       course: string
       issueDate: Date
-      certId: string
+      certificateId: string
       status: string
       verifiedBy: string[]
     }, ExtArgs["result"]["certificate"]>
@@ -2577,7 +2577,7 @@ export namespace Prisma {
     readonly recipient: FieldRef<"Certificate", 'String'>
     readonly course: FieldRef<"Certificate", 'String'>
     readonly issueDate: FieldRef<"Certificate", 'DateTime'>
-    readonly certId: FieldRef<"Certificate", 'String'>
+    readonly certificateId: FieldRef<"Certificate", 'String'>
     readonly status: FieldRef<"Certificate", 'String'>
     readonly verifiedBy: FieldRef<"Certificate", 'String[]'>
   }
@@ -2990,7 +2990,7 @@ export namespace Prisma {
     recipient: 'recipient',
     course: 'course',
     issueDate: 'issueDate',
-    certId: 'certId',
+    certificateId: 'certificateId',
     status: 'status',
     verifiedBy: 'verifiedBy'
   };
@@ -3133,7 +3133,7 @@ export namespace Prisma {
     recipient?: StringFilter<"Certificate"> | string
     course?: StringFilter<"Certificate"> | string
     issueDate?: DateTimeFilter<"Certificate"> | Date | string
-    certId?: StringFilter<"Certificate"> | string
+    certificateId?: StringFilter<"Certificate"> | string
     status?: StringFilter<"Certificate"> | string
     verifiedBy?: StringNullableListFilter<"Certificate">
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -3145,7 +3145,7 @@ export namespace Prisma {
     recipient?: SortOrder
     course?: SortOrder
     issueDate?: SortOrder
-    certId?: SortOrder
+    certificateId?: SortOrder
     status?: SortOrder
     verifiedBy?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -3153,7 +3153,7 @@ export namespace Prisma {
 
   export type CertificateWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    certId?: string
+    certificateId?: string
     AND?: CertificateWhereInput | CertificateWhereInput[]
     OR?: CertificateWhereInput[]
     NOT?: CertificateWhereInput | CertificateWhereInput[]
@@ -3164,7 +3164,7 @@ export namespace Prisma {
     status?: StringFilter<"Certificate"> | string
     verifiedBy?: StringNullableListFilter<"Certificate">
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "certId">
+  }, "id" | "certificateId">
 
   export type CertificateOrderByWithAggregationInput = {
     id?: SortOrder
@@ -3172,7 +3172,7 @@ export namespace Prisma {
     recipient?: SortOrder
     course?: SortOrder
     issueDate?: SortOrder
-    certId?: SortOrder
+    certificateId?: SortOrder
     status?: SortOrder
     verifiedBy?: SortOrder
     _count?: CertificateCountOrderByAggregateInput
@@ -3189,7 +3189,7 @@ export namespace Prisma {
     recipient?: StringWithAggregatesFilter<"Certificate"> | string
     course?: StringWithAggregatesFilter<"Certificate"> | string
     issueDate?: DateTimeWithAggregatesFilter<"Certificate"> | Date | string
-    certId?: StringWithAggregatesFilter<"Certificate"> | string
+    certificateId?: StringWithAggregatesFilter<"Certificate"> | string
     status?: StringWithAggregatesFilter<"Certificate"> | string
     verifiedBy?: StringNullableListFilter<"Certificate">
   }
@@ -3262,7 +3262,7 @@ export namespace Prisma {
     recipient: string
     course: string
     issueDate: Date | string
-    certId: string
+    certificateId: string
     status?: string
     verifiedBy?: CertificateCreateverifiedByInput | string[]
     user: UserCreateNestedOneWithoutCertificatesInput
@@ -3274,7 +3274,7 @@ export namespace Prisma {
     recipient: string
     course: string
     issueDate: Date | string
-    certId: string
+    certificateId: string
     status?: string
     verifiedBy?: CertificateCreateverifiedByInput | string[]
   }
@@ -3283,7 +3283,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     course?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    certId?: StringFieldUpdateOperationsInput | string
+    certificateId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     verifiedBy?: CertificateUpdateverifiedByInput | string[]
     user?: UserUpdateOneRequiredWithoutCertificatesNestedInput
@@ -3294,7 +3294,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     course?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    certId?: StringFieldUpdateOperationsInput | string
+    certificateId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     verifiedBy?: CertificateUpdateverifiedByInput | string[]
   }
@@ -3305,7 +3305,7 @@ export namespace Prisma {
     recipient: string
     course: string
     issueDate: Date | string
-    certId: string
+    certificateId: string
     status?: string
     verifiedBy?: CertificateCreateverifiedByInput | string[]
   }
@@ -3314,7 +3314,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     course?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    certId?: StringFieldUpdateOperationsInput | string
+    certificateId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     verifiedBy?: CertificateUpdateverifiedByInput | string[]
   }
@@ -3324,7 +3324,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     course?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    certId?: StringFieldUpdateOperationsInput | string
+    certificateId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     verifiedBy?: CertificateUpdateverifiedByInput | string[]
   }
@@ -3443,7 +3443,7 @@ export namespace Prisma {
     recipient?: SortOrder
     course?: SortOrder
     issueDate?: SortOrder
-    certId?: SortOrder
+    certificateId?: SortOrder
     status?: SortOrder
     verifiedBy?: SortOrder
   }
@@ -3454,7 +3454,7 @@ export namespace Prisma {
     recipient?: SortOrder
     course?: SortOrder
     issueDate?: SortOrder
-    certId?: SortOrder
+    certificateId?: SortOrder
     status?: SortOrder
   }
 
@@ -3464,7 +3464,7 @@ export namespace Prisma {
     recipient?: SortOrder
     course?: SortOrder
     issueDate?: SortOrder
-    certId?: SortOrder
+    certificateId?: SortOrder
     status?: SortOrder
   }
 
@@ -3613,7 +3613,7 @@ export namespace Prisma {
     recipient: string
     course: string
     issueDate: Date | string
-    certId: string
+    certificateId: string
     status?: string
     verifiedBy?: CertificateCreateverifiedByInput | string[]
   }
@@ -3623,7 +3623,7 @@ export namespace Prisma {
     recipient: string
     course: string
     issueDate: Date | string
-    certId: string
+    certificateId: string
     status?: string
     verifiedBy?: CertificateCreateverifiedByInput | string[]
   }
@@ -3662,7 +3662,7 @@ export namespace Prisma {
     recipient?: StringFilter<"Certificate"> | string
     course?: StringFilter<"Certificate"> | string
     issueDate?: DateTimeFilter<"Certificate"> | Date | string
-    certId?: StringFilter<"Certificate"> | string
+    certificateId?: StringFilter<"Certificate"> | string
     status?: StringFilter<"Certificate"> | string
     verifiedBy?: StringNullableListFilter<"Certificate">
   }
@@ -3722,7 +3722,7 @@ export namespace Prisma {
     recipient: string
     course: string
     issueDate: Date | string
-    certId: string
+    certificateId: string
     status?: string
     verifiedBy?: CertificateCreateverifiedByInput | string[]
   }
@@ -3731,7 +3731,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     course?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    certId?: StringFieldUpdateOperationsInput | string
+    certificateId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     verifiedBy?: CertificateUpdateverifiedByInput | string[]
   }
@@ -3740,7 +3740,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     course?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    certId?: StringFieldUpdateOperationsInput | string
+    certificateId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     verifiedBy?: CertificateUpdateverifiedByInput | string[]
   }
@@ -3749,7 +3749,7 @@ export namespace Prisma {
     recipient?: StringFieldUpdateOperationsInput | string
     course?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    certId?: StringFieldUpdateOperationsInput | string
+    certificateId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     verifiedBy?: CertificateUpdateverifiedByInput | string[]
   }

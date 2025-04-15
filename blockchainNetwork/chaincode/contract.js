@@ -95,7 +95,7 @@ class CertnetContract extends Contract {
 				studentId: studentId,
 				courseId: courseId,
 				teacher: msgSender,
-				certId: courseId + '-' + studentId,
+				certificateId: courseId + '-' + studentId,
 				originalHash: originalHash,
 				grade: gradeReceived,
 				createdAt: new Date(),

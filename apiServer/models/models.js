@@ -40,7 +40,7 @@ const studentSchema = new Schema({
  * Certificate Schema
  */
 const certificateSchema = new Schema({
-  certId: {
+  certificateId: {
     type: String,
     required: true,
     unique: true

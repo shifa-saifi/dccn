@@ -28,12 +28,12 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleApprove = async (certId: string) => {
+  const handleApprove = async (certificateId: string) => {
     try {
       const res = await fetch('/api/certificates/approve', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ certId, approver: 'admin' }),
+        body: JSON.stringify({ certificateId, approver: 'admin' }),
       });
       const result = await res.json();
       if (res.ok) {
@@ -47,12 +47,12 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleReject = async (certId: string) => {
+  const handleReject = async (certificateId: string) => {
     try {
       const res = await fetch('/api/certificates/reject', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ certId }),
+        body: JSON.stringify({ certificateId }),
       });
       const result = await res.json();
       if (res.ok) {

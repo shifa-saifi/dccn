@@ -25,7 +25,7 @@ model Certificate {
   recipient  String
   course     String
   issueDate  DateTime
-  certId     String   @unique
+  certificateId     String   @unique
   status     String   @default("pending")
   verifiedBy String[]
 }

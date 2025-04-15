@@ -38,7 +38,7 @@ const VerifyCertificate = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ certId: certificateId.trim() }),
+        body: JSON.stringify({ certificateId: certificateId.trim() }),
       });
 
       const data = await res.json();

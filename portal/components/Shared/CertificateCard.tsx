@@ -17,12 +17,12 @@ const CertificateCard = ({
   showActions?: boolean;
   role?: 'admin' | 'institution' | '';
 }) => {
-  const { recipient, course, issueDate, certId, status } = data;
+  const { recipient, course, issueDate, certificateId, status } = data;
 
   const handleApprove = async () => {
     await fetch(`/api/cert/approve`, {
       method: 'POST',
-      body: JSON.stringify({ certId }),
+      body: JSON.stringify({ certificateId }),
     });
     window.location.reload();
   };
@@ -30,7 +30,7 @@ const CertificateCard = ({
   const handleReject = async () => {
     await fetch(`/api/cert/reject`, {
       method: 'POST',
-      body: JSON.stringify({ certId }),
+      body: JSON.stringify({ certificateId }),
     });
     window.location.reload();
   };
