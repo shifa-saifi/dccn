@@ -67,14 +67,15 @@ const Navbar = () => {
     { title: 'Home', path: '/' },
     ...(user?.role === 'Admin'
       ? [
-          { title: 'Dashboard', path: '/dashboard' },
-          { title: 'Certificate List', path: '/certificates/list' },
-        ]
+        { title: 'Dashboard', path: '/dashboard' },
+        { title: 'Certificate List', path: '/certificates/list' },
+      ]
       : user?.role === 'Institution'
-      ? [{ title: 'Certification Management', path: '/certification-management' }]
-      : user?.role === 'Individual'
-      ? [{ title: 'User Wallets', path: '/user-wallets' }]
-      : []),
+        ? [{ title: 'Certification Management', path: '/certification-management' }, { title: 'Certificate List', path: '/certificates/list' },
+        ]
+        : user?.role === 'Individual'
+          ? [{ title: 'User Wallets', path: '/user-wallets' }]
+          : []),
     { title: 'Help & Support', path: '/help-support' },
   ];
 
@@ -150,7 +151,7 @@ const Navbar = () => {
                   </Box>
 
                   <Divider sx={{ my: 1 }} />
-{/* 
+                  {/* 
                   <MenuItem onClick={() => { handleProfileClose(); router.push('/profile'); }}>
                     View Profile
                   </MenuItem> */}
