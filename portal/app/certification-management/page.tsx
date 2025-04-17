@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Container, Typography, Box } from '@mui/material';
-import CertificationTabs from '@/components/CertificationManagement/CertificationTabs';
+
+const CertificationTabs = lazy(() => import('@/components/CertificationManagement/CertificationTabs'));
 
 const CertificationManagement = () => {
   return (
@@ -13,7 +14,9 @@ const CertificationManagement = () => {
           Issue, verify, and revoke certifications with ease.
         </Typography>
       </Box>
-      <CertificationTabs />
+      <Suspense fallback={<Typography>Loading...</Typography>}>
+        <CertificationTabs />
+      </Suspense>
     </Container>
   );
 };

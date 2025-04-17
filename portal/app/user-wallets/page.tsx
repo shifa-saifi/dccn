@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Container, Typography, Box } from '@mui/material';
-import UserWalletTabs from '@/components/UserWallets/UserWalletTabs';
+
+const UserWalletTabs = lazy(() => import('@/components/UserWallets/UserWalletTabs'));
 
 const UserWallets = () => {
   return (
@@ -13,7 +14,9 @@ const UserWallets = () => {
           Manage, share, and import your certificates with ease.
         </Typography>
       </Box>
-      <UserWalletTabs />
+      <Suspense fallback={<div>Loading...</div>}>
+        <UserWalletTabs />
+      </Suspense>
     </Container>
   );
 };

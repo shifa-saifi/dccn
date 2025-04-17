@@ -45,10 +45,8 @@ const SignupPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      console.log("🚀 ~ handleSignup ~ res:", res)
 
       const data = await res.json();
-      console.log("🚀 ~ handleSignup ~ data:", data)
 
       if (!res.ok) {
         setError(data.error || 'Something went wrong. Please try again.');

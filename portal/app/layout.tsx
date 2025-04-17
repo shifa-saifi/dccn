@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/components/Navbar/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
+import { Suspense, lazy } from "react";
+
+const Navbar = lazy(() => import("@/components/Navbar/Navbar"));
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,9 +31,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AuthProvider>
-
-      <Navbar />
-        {children}
+          <Suspense fallback={<div>Loading...</div>}>
+            <Navbar />
+          </Suspense>
+          {children}
         </AuthProvider>
       </body>
     </html>

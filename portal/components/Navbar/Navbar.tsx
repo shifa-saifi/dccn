@@ -36,23 +36,29 @@ const Navbar = () => {
   const router = useRouter();
   const profileMenuOpen = Boolean(anchorEl);
 
+  // Load user from localStorage and listen for changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('currentUser');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          setUser(parsed);
-        }
-      } catch (err) {
-        console.error('Failed to load user data:', err);
+    const updateUser = () => {
+      const stored = localStorage.getItem('currentUser');
+      if (stored) {
+        setUser(JSON.parse(stored));
+      } else {
+        setUser(null);
       }
-    }
+    };
+  
+    updateUser();
+  
+    window.addEventListener('userChanged', updateUser);
+    return () => window.removeEventListener('userChanged', updateUser);
   }, []);
+  
 
   const handleLogout = () => {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
+    setUser(null);
+    window.dispatchEvent(new Event('userChanged')); // notify all tabs/components
     router.push('/login');
   };
 
@@ -63,19 +69,22 @@ const Navbar = () => {
   const handleProfileClose = () => {
     setAnchorEl(null);
   };
+
   const menuLinks = [
     { title: 'Home', path: '/' },
     ...(user?.role === 'Admin'
       ? [
-        { title: 'Dashboard', path: '/dashboard' },
-        { title: 'Certificate List', path: '/certificates/list' },
-      ]
-      : user?.role === 'Institution'
-        ? [{ title: 'Certification Management', path: '/certification-management' }, { title: 'Certificate List', path: '/certificates/list' },
+          { title: 'Dashboard', path: '/dashboard' },
+          { title: 'Certificate List', path: '/certificates/list' },
         ]
-        : user?.role === 'Individual'
-          ? [{ title: 'User Wallets', path: '/user-wallets' }]
-          : []),
+      : user?.role === 'Institution'
+      ? [
+          { title: 'Certification Management', path: '/certification-management' },
+          { title: 'Certificate List', path: '/certificates/list' },
+        ]
+      : user?.role === 'Individual'
+      ? [{ title: 'User Wallets', path: '/user-wallets' }]
+      : []),
     { title: 'Help & Support', path: '/help-support' },
   ];
 
@@ -89,9 +98,7 @@ const Navbar = () => {
             </ListItemButton>
           </ListItem>
         ))}
-        {user && (
-          <ListItemButton onClick={handleLogout}>Logout</ListItemButton>
-        )}
+        {user && <ListItemButton onClick={handleLogout}>Logout</ListItemButton>}
       </List>
     </Box>
   );
@@ -101,7 +108,7 @@ const Navbar = () => {
       <Toolbar>
         <Logo />
 
-        {/* Desktop Navigation */}
+        {/* Desktop Menu */}
         {!isMobile && (
           <Box sx={{ display: 'flex', ml: 'auto', gap: 2 }}>
             {menuLinks.map((link) => (
@@ -151,10 +158,6 @@ const Navbar = () => {
                   </Box>
 
                   <Divider sx={{ my: 1 }} />
-                  {/* 
-                  <MenuItem onClick={() => { handleProfileClose(); router.push('/profile'); }}>
-                    View Profile
-                  </MenuItem> */}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </>
@@ -162,13 +165,17 @@ const Navbar = () => {
           </Box>
         )}
 
-        {/* Mobile Navigation */}
+        {/* Mobile Menu */}
         {isMobile && (
           <>
             <IconButton edge="end" color="inherit" onClick={() => setDrawerOpen(true)}>
               <MenuIcon />
             </IconButton>
-            <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+            <Drawer
+              anchor="right"
+              open={drawerOpen}
+              onClose={() => setDrawerOpen(false)}
+            >
               {drawerContent}
             </Drawer>
           </>

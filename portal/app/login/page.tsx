@@ -23,42 +23,37 @@ const LoginPage = () => {
 
   const handleLogin = async () => {
     const { email, password } = credentials;
-
+  
     if (!email || !password) {
       setError('Please enter both email and password.');
       return;
     }
-
+  
     setLoading(true);
     setError('');
-
+  
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      
+  
       const data = await res.json();
-      
-      if (!res.ok) {
-        console.error('Login error:', data.error); // 👈 Log detailed error
-        setError(data.error || 'Server error. Please try again.');
-      }
-      if (!data.token) {
-        setError('Login failed. Please try again.');
+  
+      if (!res.ok || data.error || !data.token) {
+        setError(data.error || 'Login failed. Please try again.');
         return;
       }
-      if (data.error) {
-        setError(data.error);
-        return;
-      }      
-
-      // Store JWT & user info in localStorage
+  
+      // ✅ Store login details
       localStorage.setItem('token', data.token);
       localStorage.setItem('currentUser', JSON.stringify(data.user));
-
-      // Redirect based on user type
+  
+      // ✅ Notify app (e.g. Navbar) of login
+      window.dispatchEvent(new Event('userChanged'));
+  
+      // ✅ Redirect based on user role
       switch (data.user.role) {
         case 'Admin':
           router.push('/dashboard');
@@ -73,11 +68,13 @@ const LoginPage = () => {
           router.push('/');
       }
     } catch (err) {
+      console.error('Login failed:', err);
       setError('Server error. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <Box

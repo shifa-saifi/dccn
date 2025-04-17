@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Container, Typography, Box } from '@mui/material';
-import UserProfileTabs from '@/components/UserProfile/UserProfileTabs';
+
+const UserProfileTabs = lazy(() => import('@/components/UserProfile/UserProfileTabs'));
 
 const UserProfile = () => {
   return (
@@ -13,7 +14,9 @@ const UserProfile = () => {
           Manage your account information and notification preferences.
         </Typography>
       </Box>
-      <UserProfileTabs />
+      <Suspense fallback={<div>Loading...</div>}>
+        <UserProfileTabs />
+      </Suspense>
     </Container>
   );
 };

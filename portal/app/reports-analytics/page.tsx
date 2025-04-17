@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Container, Typography, Box } from '@mui/material';
-import ReportsTabs from '@/components/ReportsAnalytics/ReportsTabs';
+
+const ReportsTabs = lazy(() => import('@/components/ReportsAnalytics/ReportsTabs'));
 
 const ReportsAnalytics = () => {
   return (
@@ -13,7 +14,9 @@ const ReportsAnalytics = () => {
           Access insights and audit trails for certification activities.
         </Typography>
       </Box>
-      <ReportsTabs />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ReportsTabs />
+      </Suspense>
     </Container>
   );
 };
