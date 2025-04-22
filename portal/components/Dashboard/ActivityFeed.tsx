@@ -24,7 +24,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 interface Certificate {
-  certificateId: string;
+  id: string;
   recipientName: string;
   course: string;
   dateIssued: string;
@@ -56,7 +56,10 @@ const ActivityFeed = () => {
     if (!selected) return;
     await fetch('/api/certificates/certStatus', {
       method: 'POST',
-      body: JSON.stringify({ certificateId: selected.certificateId }),
+      body: JSON.stringify({ id: selected.id, action: 'approve', approver: 'admin' }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     window.location.reload();
   };
@@ -65,8 +68,10 @@ const ActivityFeed = () => {
     if (!selected) return;
     await fetch('/api/certificates/certStatus', {
       method: 'POST',
-      body: JSON.stringify({ certificateId: selected.certificateId }),
-    });
+      body: JSON.stringify({ id: selected.id, action: 'reject', approver: 'admin' }),
+      headers: {
+        'Content-Type': 'application/json',
+      },    });
     window.location.reload();
   };
 
@@ -156,7 +161,7 @@ const ActivityFeed = () => {
               <Typography><strong>Course:</strong> {selected.course}</Typography>
               <Typography><strong>Issued By:</strong> {selected.issuerName}</Typography>
               <Typography><strong>Date Issued:</strong> {selected.dateIssued}</Typography>
-              <Typography><strong>Certificate ID:</strong> {selected.certificateId}</Typography>
+              <Typography><strong>Certificate ID:</strong> {selected.id}</Typography>
               <Typography sx={{ mt: 2 }}>
                 <strong>Status:</strong>{' '}
                 <Chip

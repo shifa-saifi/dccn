@@ -34,7 +34,7 @@ export async function POST(req: Request) {
                 return NextResponse.json(updated);
             }
 
-            if (approver === 'institution') {
+            if (approver === 'institute') {
                 const updated = await prisma.certificate.update({
                     where: { id },
                     data: {

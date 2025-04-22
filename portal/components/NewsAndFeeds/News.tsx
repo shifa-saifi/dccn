@@ -1,8 +1,12 @@
+'use client';
+
 import { Box, Typography, Grid, Card, CardContent, CardMedia, Button } from '@mui/material';
+import Link from 'next/link';
 
 const NewsUpdates = () => {
   const newsData = [
     {
+      slug: "blockchain-certification-universities",
       title: "Blockchain Certification Gaining Popularity in Universities",
       date: "October 12, 2023",
       description:
@@ -10,6 +14,7 @@ const NewsUpdates = () => {
       imageUrl: "/gainingPopularity.webp",
     },
     {
+      slug: "partnership-with-educhain",
       title: "Our Partnership with EduChain Announced",
       date: "September 25, 2023",
       description:
@@ -17,6 +22,7 @@ const NewsUpdates = () => {
       imageUrl: "/partnershipwitheduchain.webp",
     },
     {
+      slug: "real-time-verification",
       title: "New Feature: Real-Time Certificate Verification",
       date: "September 1, 2023",
       description:
@@ -24,6 +30,7 @@ const NewsUpdates = () => {
       imageUrl: "/realtimecertveri.webp",
     },
     {
+      slug: "ceo-speaks-global-summit",
       title: "CEO Speaks at Global Education Summit",
       date: "August 20, 2023",
       description:
@@ -60,9 +67,11 @@ const NewsUpdates = () => {
                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
                   {news.description}
                 </Typography>
-                <Button variant="text" color="primary">
-                  Read More
-                </Button>
+                <Link href={`/news/${news.slug}`} passHref>
+                  <Button variant="text" color="primary">
+                    Read More
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </Grid>
