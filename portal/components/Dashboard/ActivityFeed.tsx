@@ -40,8 +40,10 @@ const ActivityFeed = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Certificate | null>(null);
+  const [isClient, setIsClient] = useState(false); // <-- Important
 
   useEffect(() => {
+    setIsClient(true); // Mark client render
     fetch('/api/certificates/list')
       .then((res) => res.json())
       .then((data) => {
@@ -56,10 +58,8 @@ const ActivityFeed = () => {
     if (!selected) return;
     await fetch('/api/certificates/certStatus', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: selected.id, action: 'approve', approver: 'admin' }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
     window.location.reload();
   };
@@ -68,10 +68,9 @@ const ActivityFeed = () => {
     if (!selected) return;
     await fetch('/api/certificates/certStatus', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: selected.id, action: 'reject', approver: 'admin' }),
-      headers: {
-        'Content-Type': 'application/json',
-      },    });
+    });
     window.location.reload();
   };
 
@@ -93,6 +92,14 @@ const ActivityFeed = () => {
         return { icon: <AssignmentTurnedInIcon />, color: '#9E9E9E' };
     }
   };
+
+  if (!isClient) {
+    return (
+      <Box display="flex" justifyContent="center" py={10}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ maxWidth: '700px', mx: 'auto', py: 4 }}>
@@ -160,7 +167,7 @@ const ActivityFeed = () => {
               <Typography><strong>Recipient:</strong> {selected.recipientName}</Typography>
               <Typography><strong>Course:</strong> {selected.course}</Typography>
               <Typography><strong>Issued By:</strong> {selected.issuerName}</Typography>
-              <Typography><strong>Date Issued:</strong> {selected.dateIssued}</Typography>
+              {/* <Typography><strong>Date Issued:</strong> {new Date(selected.dateIssued).toLocaleDateString()}</Typography> */}
               <Typography><strong>Certificate ID:</strong> {selected.id}</Typography>
               <Typography sx={{ mt: 2 }}>
                 <strong>Status:</strong>{' '}
