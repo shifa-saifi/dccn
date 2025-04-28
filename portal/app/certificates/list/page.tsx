@@ -89,7 +89,6 @@ const CertificateListPage = () => {
       <Typography
         variant="body1"
         align="center"
-        color="textSecondary"
         sx={{ mb: 4 }}
       >
         Most recent certificates are shown at the top. Admin and Institutions can
