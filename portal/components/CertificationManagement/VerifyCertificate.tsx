@@ -42,12 +42,29 @@ const VerifyCertificate = () => {
       });
 
       const data = await res.json();
+      console.log("🚀 ~ handleVerify ~ data:", data)
+      if (!res.ok) {
+        setVerificationStatus('❌ Error verifying certificate. Please try again.');
+        return;
+      }
+      
 
-      if (res.ok && data?.valid) {
+      if (res.ok) {
         const cert = data.cert;
-        setVerificationStatus(`✅ Certificate is VALID. Issued to: ${cert.recipient}, Course: ${cert.course}, Status: ${cert.status}`);
+        if (cert?.approvedByAdmin && cert?.approvedByInstitute) {
+          setVerificationStatus(`✅ Certificate is VALID. Issued to: ${cert.recipientName}, Course: ${cert.course}, Status: ${cert.status}`);
+        } else if (!cert?.approvedByAdmin && !cert?.approvedByInstitute) {
+          setVerificationStatus('⚠️ Certificate is CREATED but no verification has been made yet.');
+        } else if (!cert?.approvedByAdmin || !cert?.approvedByInstitute) {
+          const pendingFrom = [];
+          if (!cert?.approvedByAdmin) pendingFrom.push('Admin');
+          if (!cert?.approvedByInstitute) pendingFrom.push('Institute');
+          setVerificationStatus(`⚠️ Certificate verification is PENDING. Pending approval from: ${pendingFrom.join(' and ')}.`);
+        } else {
+          setVerificationStatus('❌ Certificate is INVALID or not yet verified.');
+        }
       } else {
-        setVerificationStatus('❌ Certificate is INVALID or not yet verified.');
+        setVerificationStatus('❌ Error verifying certificate. Please try again.');
       }
     } catch (err) {
       setVerificationStatus('❌ Error verifying certificate. Please try again.');
