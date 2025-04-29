@@ -21,24 +21,29 @@ import DownloadIcon from '@mui/icons-material/Download';
 import EmailIcon from '@mui/icons-material/Email';
 import { jsPDF } from 'jspdf';
 
-const ImportCertificate = () => {
-  const [certificate, setCertificate] = useState({
+interface Certificate {
+  certificateId: string;
+  recipientName: string;
+  issuerName: string;
+}
+
+const ImportCertificate: React.FC = () => {
+  const [certificate, setCertificate] = useState<Certificate>({
     certificateId: '',
     recipientName: '',
     issuerName: '',
   });
 
-  const [importedCertificate, setImportedCertificate] = useState(null); // Store imported certificate
+  const [importedCertificate, setImportedCertificate] = useState<Certificate | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Handle input changes
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCertificate({ ...certificate, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setCertificate((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle certificate import
   const handleImport = () => {
     if (!certificate.certificateId || !certificate.recipientName || !certificate.issuerName) {
       setSnackbarMessage('Please fill all fields before importing.');
@@ -46,14 +51,12 @@ const ImportCertificate = () => {
       return;
     }
 
-    // Store imported certificate
     setImportedCertificate(certificate);
-    setDialogOpen(true); // Open dialog box
+    setDialogOpen(true);
 
     setSnackbarMessage('Certificate imported successfully!');
     setSnackbarOpen(true);
 
-    // Reset input fields
     setCertificate({
       certificateId: '',
       recipientName: '',
@@ -61,16 +64,14 @@ const ImportCertificate = () => {
     });
   };
 
-  // Close dialog
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
-  // Download certificate as PDF
   const handleDownload = () => {
     if (!importedCertificate) return;
-    const doc = new jsPDF();
 
+    const doc = new jsPDF();
     doc.setFont('times', 'bold');
     doc.setFontSize(24);
     doc.text('Certificate of Completion', 60, 40);
@@ -94,9 +95,9 @@ const ImportCertificate = () => {
     doc.save(`${importedCertificate.recipientName}_certificate.pdf`);
   };
 
-  // Share certificate via email
   const handleEmail = () => {
     if (!importedCertificate) return;
+
     const email = prompt('Enter recipient email:');
     if (email) {
       const subject = encodeURIComponent('Your Imported Certificate is Ready');
@@ -164,7 +165,6 @@ const ImportCertificate = () => {
         </Grid>
       </Grid>
 
-      {/* Success Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
@@ -172,11 +172,14 @@ const ImportCertificate = () => {
         message={snackbarMessage}
       />
 
-      {/* Certificate Dialog Box */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} fullWidth maxWidth="sm">
         <DialogTitle>
           Imported Certificate
-          <IconButton aria-label="close" onClick={handleCloseDialog} sx={{ position: 'absolute', right: 10, top: 10 }}>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseDialog}
+            sx={{ position: 'absolute', right: 10, top: 10 }}
+          >
             <CloseIcon />
           </IconButton>
         </DialogTitle>

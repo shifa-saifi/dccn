@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(_: any, { params }: { params: { id: string } }) {
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+  if (!id) {
+    return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+  }
   try {
     const cert = await prisma.certificate.findUnique({
-      where: { certificateId: params.id },
+      where: { certificateId: id },
     });
 
     if (!cert) {
@@ -12,21 +19,9 @@ export async function GET(_: any, { params }: { params: { id: string } }) {
     }
 
     return NextResponse.json(cert, { status: 200 });
-  } catch (error) {
+  }
+  catch (error) {
+    console.error('Error fetching certificate:', error);
     return NextResponse.json({ error: 'Fetch failed' }, { status: 500 });
   }
 }
-
-
-
-export async function DELETE(_: any, { params }: { params: { id: string } }) {
-    try {
-      await prisma.certificate.delete({
-        where: { certificateId: params.id },
-      });
-  
-      return NextResponse.json({ message: 'Deleted' }, { status: 200 });
-    } catch (error) {
-      return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
-    }
-  }

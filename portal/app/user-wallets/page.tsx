@@ -33,7 +33,7 @@ const UserWallets = () => {
       if (!res.ok) throw new Error(data.error || 'Failed to fetch certificates');
       setCertificates(data || []);
     } catch (err: any) {
-      console.error('Error fetching:', err.message);
+      console.error('Error fetching:', (err as Error).message);
     } finally {
       setLoading(false);
     }

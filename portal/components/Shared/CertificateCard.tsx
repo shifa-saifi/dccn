@@ -12,6 +12,7 @@ const CertificateCard = ({
   data,
   showActions = false,
   role = '',
+  
 }: {
   data: any;
   showActions?: boolean;

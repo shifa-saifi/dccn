@@ -18,10 +18,23 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import DownloadIcon from '@mui/icons-material/Download';
 import EmailIcon from '@mui/icons-material/Email';
 import { jsPDF } from 'jspdf';
+interface Certificate {
+  certificateId: string;
+  recipientName: string;
+  courseName: string;
+  issuerName: string;
+  date?: string;
+}
 
 const MyCertificates = () => {
   const [open, setOpen] = useState(false);
-  const [selectedCert, setSelectedCert] = useState(null);
+    const [selectedCert, setSelectedCert] = useState<Certificate>({
+      certificateId: '',
+      recipientName: '',
+      courseName: '',
+      issuerName: '',
+      date: '',
+    });
 
   const certificates = [
     {
@@ -51,7 +64,7 @@ const MyCertificates = () => {
   ];
 
   // Open dialog and set selected certificate
-  const handleOpen = (cert) => {
+  const handleOpen = (cert:any) => {
     setSelectedCert(cert);
     setOpen(true);
   };
@@ -74,13 +87,13 @@ const MyCertificates = () => {
     doc.setFontSize(16);
     doc.text(`This is to certify that`, 80, 60);
     doc.setFontSize(22);
-    doc.text(`${selectedCert.recipient}`, 70, 75);
+    doc.text(`${selectedCert.recipientName}`, 70, 75);
     doc.setFontSize(16);
     doc.text(`has successfully completed the`, 70, 90);
     doc.setFontSize(18);
-    doc.text(`${selectedCert.name}`, 85, 105);
+    doc.text(`${selectedCert.courseName}`, 85, 105);
     doc.setFontSize(14);
-    doc.text(`Issued by: ${selectedCert.issuedBy}`, 70, 120);
+    doc.text(`Issued by: ${selectedCert.issuerName}`, 70, 120);
     doc.text(`Date Issued: ${selectedCert.date}`, 70, 135);
     doc.text(`Certificate ID: ${selectedCert.certificateId}`, 70, 150);
 
@@ -88,7 +101,7 @@ const MyCertificates = () => {
     doc.text(`_______________________       _______________________`, 50, 170);
     doc.text(`Authorized Signatory          Institution Seal`, 70, 180);
 
-    doc.save(`${selectedCert.recipient}_certificate.pdf`);
+    doc.save(`${selectedCert.recipientName}_certificate.pdf`);
   };
 
   // Share certificate via email
@@ -98,7 +111,7 @@ const MyCertificates = () => {
     if (email) {
       const subject = encodeURIComponent('Your Certificate is Ready');
       const body = encodeURIComponent(
-        `Dear ${selectedCert.recipient},\n\nYour certificate for "${selectedCert.name}" has been issued.\nCertificate ID: ${selectedCert.certificateId}\nIssued by: ${selectedCert.issuedBy}\nDate: ${selectedCert.date}\n\nBest regards,\nCertification Team`
+        `Dear ${selectedCert.recipientName},\n\nYour certificate for "${selectedCert.courseName}" has been issued.\nCertificate ID: ${selectedCert.certificateId}\nIssued by: ${selectedCert.issuerName}\nDate: ${selectedCert.date}\n\nBest regards,\nCertification Team`
       );
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
@@ -166,14 +179,14 @@ const MyCertificates = () => {
                 This is to certify that
               </Typography>
               <Typography variant="h4" fontWeight="bold" color="primary">
-                {selectedCert.recipient}
+                {selectedCert.recipientName}
               </Typography>
               <Typography variant="body1">has successfully completed the</Typography>
               <Typography variant="h5" fontWeight="bold" color="secondary">
-                {selectedCert.name}
+                {selectedCert.courseName}
               </Typography>
               <Typography variant="body2" sx={{ mt: 2 }}>
-                Issued by: <strong>{selectedCert.issuedBy}</strong>
+                Issued by: <strong>{selectedCert.issuerName}</strong>
               </Typography>
               <Typography variant="body2">
                 Date Issued: <strong>{selectedCert.date}</strong>

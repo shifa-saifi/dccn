@@ -11,34 +11,15 @@ export async function POST(req: Request) {
   const cert = await prisma.certificate.findUnique({ where: { certificateId } });
   if (!cert) return NextResponse.json({ error: 'Certificate not found' }, { status: 404 });
 
-  // // Prevent duplicate verification
-  // if (cert?.verifiedBy.includes(user.role)) {
-  //   return NextResponse.json({ message: 'Already verified by this role' });
-  // }
-
-  // const updatedVerifiedBy = [...cert.verifiedBy, user.role];
-
-  // let newStatus = cert.status;
-  // if (updatedVerifiedBy.includes('Institute') && updatedVerifiedBy.includes('Admin')) {
-  //   newStatus = 'verified';
-  // } else if (updatedVerifiedBy.includes('Institute')) {
-  //   newStatus = 'institute-verified';
-  // }
-
-  // const updated = await prisma.certificate.update({
-  //   where: { certificateId },
-  //   data: {
-  //     verifiedBy: updatedVerifiedBy,
-  //     status: newStatus,
-  //   },
-  // });
 
   return NextResponse.json({ success: true, cert });
 }
 export async function GET(req: Request) {
-  const { certificateId } = req.url.split('?')[1];
+  const queryParams = new URLSearchParams(req.url.split('?')[1]);
+  const certificateId = queryParams.get('certificateId');
   const user = getUserFromToken(req);
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!certificateId) return NextResponse.json({ error: 'Invalid certificate ID' }, { status: 400 });
 
   const cert = await prisma.certificate.findUnique({ where: { certificateId } });
   if (!cert) return NextResponse.json({ error: 'Certificate not found' }, { status: 404 });
@@ -46,10 +27,12 @@ export async function GET(req: Request) {
   return NextResponse.json(cert);
 }
 export async function DELETE(req: Request) {
-    const { certificateId } = req.url.split('?')[1];
+    const queryParams = new URLSearchParams(req.url.split('?')[1]);
+    const certificateId = queryParams.get('certificateId');
     const user = getUserFromToken(req);
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    
+    if (!certificateId) return NextResponse.json({ error: 'Invalid certificate ID' }, { status: 400 });
+
     const cert = await prisma.certificate.findUnique({ where: { certificateId } });
     if (!cert) return NextResponse.json({ error: 'Certificate not found' }, { status: 404 });
     

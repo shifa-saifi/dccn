@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import {
   Box,
   Typography,
@@ -18,7 +18,7 @@ import html2canvas from "html2canvas";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 
-const CertificateView = () => {
+const CertificateViewContent = () => {
   const searchParams = useSearchParams();
   const [certificate, setCertificate] = useState({
     recipientName: "",
@@ -61,9 +61,9 @@ const CertificateView = () => {
     const imgData = canvas.toDataURL("image/png");
 
     const newWindow = window.open("", "_blank");
-    newWindow.document.write(`<img src="${imgData}" style="width:100%">`);
-    newWindow.document.close();
-    newWindow.print();
+    newWindow?.document.write(`<img src="${imgData}" style="width:100%">`);
+    newWindow?.document.close();
+    newWindow?.print();
   };
 
   const handleEmailDialogOpen = () => setEmailDialogOpen(true);
@@ -231,6 +231,14 @@ const CertificateView = () => {
         </DialogActions>
       </Dialog>
     </Box>
+  );
+};
+
+const CertificateView = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CertificateViewContent />
+    </Suspense>
   );
 };
 

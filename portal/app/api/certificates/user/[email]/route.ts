@@ -1,14 +1,28 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(_: any, { params }: { params: { email: string } }) {
+
+import { NextRequest } from 'next/server';
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('email');
+  if (!id) {
+    return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+  }
   try {
-    const certs = await prisma.certificate.findMany({
-      where: { studentEmail: params.email },
+    const cert = await prisma.certificate.findFirst({
+      where: { studentEmail: id },
     });
 
-    return NextResponse.json(certs, { status: 200 });
-  } catch (error) {
+    if (!cert) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(cert, { status: 200 });
+  }
+  catch (error) {
+    console.error('Error fetching certificate:', error);
     return NextResponse.json({ error: 'Fetch failed' }, { status: 500 });
   }
 }

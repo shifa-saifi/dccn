@@ -64,7 +64,7 @@ const CertificateListPage = () => {
       fetchCertificates(); // Refresh the list
     } catch (err) {
       console.log('Error updating status:', err);
-      console.error('Status change failed:', err.message);
+      console.error('Status change failed:', (err as Error).message);
     }
   };
 

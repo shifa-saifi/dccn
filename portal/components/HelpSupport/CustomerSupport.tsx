@@ -50,7 +50,7 @@ const CustomerSupport = () => {
       setAlert({ open: true, message: 'Message sent successfully!', severity: 'success' });
       setForm({ name: '', email: '', message: '' });
     } catch (err: any) {
-      setAlert({ open: true, message: err.message || 'Failed to send.', severity: 'error' });
+      setAlert({ open: true, message: (err as Error).message || 'Failed to send.', severity: 'error' });
     } finally {
       setLoading(false);
     }

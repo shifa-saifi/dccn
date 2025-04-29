@@ -10,7 +10,15 @@ import {
 } from '@mui/material';
 import CertificateCard from '../Shared/CertificateCard';
 
-const AdminDashboard = () => {
+interface CertificateCardProps {
+  data: any;
+  showActions?: boolean;
+  role?: '' | 'admin' | 'institution';
+  onApprove?: () => void;
+  onReject?: () => void;
+}
+
+const AdminDashboard:React.FC<CertificateCardProps> = () => {
   const [certificates, setCertificates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
@@ -43,7 +51,7 @@ const AdminDashboard = () => {
         throw new Error(result.message || 'Approval failed');
       }
     } catch (err: any) {
-      setAlert({ open: true, message: err.message, severity: 'error' });
+      setAlert({ open: true, message: (err as Error).message, severity: 'error' });
     }
   };
 
@@ -62,7 +70,7 @@ const AdminDashboard = () => {
         throw new Error(result.message || 'Rejection failed');
       }
     } catch (err: any) {
-      setAlert({ open: true, message: err.message, severity: 'error' });
+      setAlert({ open: true, message: (err as Error).message, severity: 'error' });
     }
   };
 
@@ -93,8 +101,8 @@ const AdminDashboard = () => {
                   data={cert}
                   showActions
                   role="admin"
-                  onApprove={() => handleApprove(cert.id)}
-                  onReject={() => handleReject(cert.id)}
+                  // onApprove={() => handleApprove(cert.id)}
+                  // onReject={() => handleReject(cert.id)}
                 />
               </Grid>
             ))}

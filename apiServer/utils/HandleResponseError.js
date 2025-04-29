@@ -36,16 +36,16 @@ class CustomError extends Error{
 
 exports.HandleResponseError = function(err, res){
     if(err instanceof RequestInputError){
-        return res.status(err.code).json({ errors: [{ msg: err.message }] })
+        return res.status(err.code).json({ errors: [{ msg: (err as Error).message }] })
     }
     if(err instanceof CustomError){
-        return res.status(err.code).json({ errors: [{ msg: err.message }] })
+        return res.status(err.code).json({ errors: [{ msg: (err as Error).message }] })
     }
     if(err instanceof ObjectExistsError){
-        return res.status(err.code).json({ errors: [{ msg: err.message }] })
+        return res.status(err.code).json({ errors: [{ msg: (err as Error).message }] })
     }
     if(err instanceof ResourceNotFoundError){
-        return res.status(err.code).json({ errors: [{ msg: err.message }] })
+        return res.status(err.code).json({ errors: [{ msg: (err as Error).message }] })
     }
     console.log(err)
     res.status(500).json({ errors: [{ msg: "Internal server error" }] })

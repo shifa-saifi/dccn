@@ -84,7 +84,7 @@ exports.createStudent = async (req, res) => {
     });
   } catch (err) {
     console.error(`Failed to create student: ${err}`);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: (err as Error).message });
   } finally {
     if (gateway) {
       gateway.disconnect();
@@ -115,7 +115,7 @@ exports.getStudent = async (req, res) => {
     });
   } catch (err) {
     console.error(`Failed to get student: ${err}`);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: (err as Error).message });
   } finally {
     if (gateway) {
       gateway.disconnect();
@@ -155,7 +155,7 @@ exports.issueCertificate = async (req, res) => {
     });
   } catch (err) {
     console.error(`Failed to issue certificate: ${err}`);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: (err as Error).message });
   } finally {
     if (gateway) {
       gateway.disconnect();
@@ -192,7 +192,7 @@ exports.verifyCertificate = async (req, res) => {
     });
   } catch (err) {
     console.error(`Failed to verify certificate: ${err}`);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: (err as Error).message });
   } finally {
     if (gateway) {
       gateway.disconnect();

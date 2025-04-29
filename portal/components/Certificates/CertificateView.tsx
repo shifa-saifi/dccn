@@ -140,7 +140,7 @@ const CertificateView = () => {
           <motion.img
             src="/gold-seal.png"
             alt="Certificate Seal"
-            style={sealStyle}
+            style={{ position: 'absolute', bottom: '-30px', right: '30px', width: '80px' }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2 }}
